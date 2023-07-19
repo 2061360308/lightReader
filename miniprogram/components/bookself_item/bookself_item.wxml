@@ -1,0 +1,11 @@
+<!--components/bookself_item/bookself_item.wxml-->
+<view class="{{del ? 'bookshelf-item bookshelf-item-del' : 'bookshelf-item'}}" data-url="{{[url, progress_url]}}" catch:tap="onOpenBook">
+  <image class="book-cover" src="{{cover}}" mode="heightFix"></image>
+  <text class="book-name">{{name}}</text>
+  <text class="read-progress">最新阅读至 {{progress_name}}</text>
+  <text class="last-update">最近更新时间: {{last_update}}</text>
+  <view class="more" catch:tap="onMoreClick">
+    <t-icon name="ellipsis" size="48rpx" />
+  </view>
+  <button class="del" catch:tap="onDel">删除</button>
+</view>

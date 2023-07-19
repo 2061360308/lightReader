@@ -1,0 +1,149 @@
+/* pages/detail/detail.wxss */
+.main{
+  /* padding-left: 20rpx;
+  padding-right: 20rpx; */
+  height: 100%;
+}
+
+.status-bar{
+  background-color: rgb(255, 179, 179);
+}
+
+.head{
+  position:relative;
+  width: 100%;
+  height: 600rpx;
+  background-color: rgb(255, 179, 179);
+}
+
+.head .back-button{
+  position: absolute;
+  left: 20rpx;
+  top: 20rpx;
+}
+
+.head .cover{
+  position: absolute;
+  top: 20rpx;
+  height: 340rpx;
+  left: 240rpx;
+}
+
+.head .title, .head .author{
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+
+.head .title{
+  top: 370rpx;
+  font-size: 48rpx;
+}
+
+.head .author{
+  top: 430rpx;
+  font-size: 30rpx;
+}
+
+.content{
+  position: relative;
+  background-color: #f6f6f6;
+  width: 100%;
+  min-height: 400rpx;
+  top: -100rpx;
+  border-radius: 80rpx 80rpx 0 0;
+}
+
+.content .sort, .content .last-update{
+  position: absolute;
+  top: 10rpx;
+  font-size: 35rpx;
+  text-align: center;
+  width: 50%;
+  line-height: 100rpx;
+}
+
+.content .sort{
+  left: 0;
+  border-right: 2rpx #CCC solid;
+  border-bottom: 10rpx #ccc solid;
+}
+
+.content .last-update{
+  right: 0;
+  border-left: 2rpx #CCC solid;
+  border-bottom: 10rpx #ccc solid;
+}
+
+.content .last_chapter{
+  position:absolute;
+  top: 150rpx;
+  width: 100%;
+  border-bottom: 10rpx #ccc solid;
+}
+
+.content .last_chapter .label{
+  border-left: 20rpx #f6f6f6 solid;
+  font-size: 30rpx;
+  color: rgb(255, 179, 179);
+}
+
+.content .last_chapter text{
+  font-size: 35rpx;
+  line-height: 70rpx;
+  border-left: 30rpx #f6f6f6 solid;
+  border-right: 20rpx #f6f6f6 solid;
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.content .synopsis{
+  position: absolute;
+  background-color: #f6f6f6;
+  width: 100%;
+  top: 290rpx;
+  overflow: scroll
+}
+
+.content .synopsis .label{
+  padding-left: 20rpx;
+  color: rgb(255, 179, 179);
+  line-height: 60rpx;
+}
+
+.content .synopsis text{
+  display: block;
+  border-left: 30rpx #f6f6f6 solid;
+  border-right: 30rpx #f6f6f6 solid;
+  border-bottom: 150rpx #f6f6f6 solid;
+  font-size: 35rpx;
+}
+
+.footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 100rpx;
+}
+
+.footer button{
+  width: 100%;
+  height: 100%;
+}
+
+.footer .add{
+  background-color: rgb(255, 179, 179);
+  color: #fff;
+  font-size: 35rpx;
+  font-weight: lighter;
+  line-height: 100rpx;
+}
+
+.footer .to-read{
+  background-color: #ccc;
+  color: #000;
+  font-size: 35rpx;
+  font-weight: lighter;
+  line-height: 100rpx;
+}

@@ -1,0 +1,118 @@
+/* pages/index.wxss */
+page{
+  background-color: #CCCCCC;
+}
+
+.main{
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  height: 100%;
+  background-color: #CCCCCC;
+}
+
+.head{
+  padding-top: 40rpx;
+  padding-bottom: 40rpx;
+}
+
+.user{
+  height: 200rpx;
+  background-color: #ffb3b3;
+  border-radius: 25rpx;
+  position: relative;
+}
+
+.user .avatar-button{
+  position: absolute;
+  height: 128rpx;
+  width: 128rpx;
+  border-radius: 70rpx;
+  background-color: rgb(136, 136, 136);
+  top: 35rpx;
+  left: 40rpx;
+  padding: 0;
+}
+
+.user .avatar-img{
+  display: block;
+  height: 128rpx;
+  width: 128rpx;
+}
+
+.user .user-name{
+  position: absolute;
+  top: 70rpx;
+  left: 230rpx;
+  font-size: 40rpx;
+}
+
+.user .user-chevron-right{
+  position: absolute;
+  top: 65rpx;
+  right: 60rpx;
+  font-size: 40rpx;
+}
+
+.bookshelf{
+  background-color: #FFFFFF;
+  padding-top: 40rpx;
+  padding-bottom: 40rpx;
+  border-radius: 25rpx;
+  overflow: hidden;
+}
+
+.add-novel{
+  position: fixed;
+  z-index: 100000;
+  height: 100rpx;
+  width: 100rpx;
+  background-color: rgb(255, 179, 179);
+  bottom: 100rpx;
+  right: 60rpx;
+  border-radius: 100rpx;
+}
+
+.emoty{
+  background-color: #FFFFFF;
+  padding-top: 40rpx;
+  padding-bottom: 40rpx;
+  border-radius: 25rpx;
+  position: relative;
+  height: 800rpx;
+}
+
+.emoty image{
+  display: block;
+}
+
+.emoty button{
+  position: absolute;
+  top: 500rpx;
+  left: 260rpx;
+  font-size: 40rpx;
+  color: rgb(255, 179, 179);
+  text-decoration: underline;
+}
+
+.emoty text{
+  font-size: 45rpx;
+  position: absolute;
+  top: 600rpx;
+  left: 160rpx;
+  color: rgb(255, 179, 179);
+}
+
+.footer{
+  height:150rpx;
+  position: relative;
+}
+
+.footer text{
+  color: rgba(25, 68, 100, 100);
+  position: absolute;
+  font-size: 48rpx;
+  /* justify-content: center; */
+  left: 250rpx;
+  top: 45rpx;
+}
+

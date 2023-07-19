@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "t-search": "tdesign-miniprogram/search/search",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-skeleton": "tdesign-miniprogram/skeleton/skeleton"
+  }
+}

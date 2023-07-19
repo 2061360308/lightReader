@@ -1,0 +1,4 @@
+{
+  "usingComponents": {"t-icon": "tdesign-miniprogram/icon/icon"},
+  "navigationStyle": "custom"
+}

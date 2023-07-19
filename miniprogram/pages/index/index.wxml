@@ -1,0 +1,38 @@
+<!--pages/index.wxml-->
+<view class="main">
+  
+  <view class="head">
+    <view class="user">
+      <button class="avatar-button" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar-img" src="{{avatarUrl}}"></image>
+      </button> 
+      <!-- <text class="user-name" wx:if="{{changeName}}">盧瞳</text> -->
+      <input type="nickname" class="user-name"  value="{{nickname}}" placeholder="请输入昵称"/>
+      <text class="user-chevron-right">></text>
+    </view>
+  </view>
+
+  <view class="add-novel" bind:tap="onAddNewBook">
+    <t-icon name="add" size="100rpx" color="rgb(255, 98, 98)" data-name="{{item}}" bind:click="onIconTap" />
+  </view>
+
+  <view class="bookshelf" wx:if="{{novel_list.length !== 0}}" bind:open="onOpenBook" bind:del="onDelBook">
+    <bookself_item  wx:for="{{novel_list}}" 
+                    name="{{item.name}}"
+                    cover="{{item.cover}}"
+                    url="{{item.url}}"
+                    last_update="{{item.last_update}}"
+                    progress_url="{{item.progress.url}}"
+                    progress_name="{{item.progress.name}}" 
+                    ></bookself_item>
+  </view>
+  <view class="emoty" wx:else="{{novel_list.length === 0}}">
+    <image src="/images/空空如也.svg" mode=""/>
+    <text>您的书架还没有书哦</text>
+    <button bind:tap="onAddNewBook">去添加</button>
+  </view>
+
+  <view class="footer">
+    <text>小说阅读</text>
+  </view>
+</view>

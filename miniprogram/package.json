@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "tdesign-miniprogram": "^1.1.13"
+  }
+}

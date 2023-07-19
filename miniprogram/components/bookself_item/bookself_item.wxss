@@ -1,0 +1,67 @@
+/* components/bookself_item/bookself_item.wxss */
+
+.bookshelf-item{
+  position: relative;
+  /* background-color: aqua; */
+  height: 170rpx;
+  margin-bottom: 40rpx;
+  /* background-color: burlywood; */
+}
+
+.bookshelf-item-del{
+  left: -150rpx;
+}
+
+.bookshelf-item .del{
+  position: absolute;
+  background: #ff4f4f;
+	color:white;
+  width: 120rpx;
+  font-size: 35rpx;
+  writing-mode:vertical-rl;
+  line-height: 70rpx;
+  border-radius: 0rem;
+  letter-spacing: 26rpx;
+  height: 100%;
+  right: -4rem;
+}
+
+.bookshelf-item .more{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 40rpx;
+  top: 0;
+  height: 100%;
+  /* background-color: royalblue; */
+}
+
+.book-cover{
+  height: 100%;
+  position: absolute;
+  left: 20rpx;
+}
+
+.book-name{
+  position: absolute;
+  left: 170rpx;
+  top: 40rpx;
+  font-size: 35rpx;
+}
+
+.read-progress{
+  position:absolute;
+  left: 170rpx;
+  font-weight: lighter;
+  top: 95rpx;
+  font-size: 20rpx;
+}
+
+.last-update{
+  position:absolute;
+  left: 170rpx;
+  top: 125rpx;
+  font-weight: lighter;
+  font-size: 20rpx;
+}

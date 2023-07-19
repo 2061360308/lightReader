@@ -1,0 +1,30 @@
+[
+  {
+    "name": "get_novel_list",
+    "value": {
+      "type": "get_novel_list",
+      "arg": "诡秘"
+    }
+  },
+  {
+    "name": "get_novel_intro",
+    "value": {
+      "type": "get_novel_intro",
+      "arg": "http://www.b520.cc/8_8187/"
+    }
+  },
+  {
+    "name": "get_chapter_list",
+    "value": {
+      "type": "get_chapter_list",
+      "arg": "http://www.b520.cc/8_8187/"
+    }
+  },
+  {
+    "name": "get_chapter_content",
+    "value": {
+      "type": "get_chapter_content",
+      "arg": "http://www.b520.cc/8_8187/3899826.html"
+    }
+  }
+]

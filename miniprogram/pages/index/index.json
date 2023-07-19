@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-swipe-cell": "tdesign-miniprogram/swipe-cell/swipe-cell",
+    "bookself_item": "/components/bookself_item/bookself_item"
+  }
+}

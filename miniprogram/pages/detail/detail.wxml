@@ -1,0 +1,33 @@
+<!--pages/detail/detail.wxml-->
+<view class="main">
+  <!--状态栏-->
+  <view class="status-bar" style="height: {{status_bar_height}}px;"></view>
+
+  <view class="head">
+    <view class="back-button">
+      <t-icon name="chevron-left" size="48rpx" data-name="{{item}}" bind:click="onBackIconTap" />
+    </view>
+    <image class="cover" src="{{cover_url}}" mode="heightFix"/>
+    <text class="title">{{title}}</text>
+    <text class="author">{{author}}</text>
+  </view>
+
+  <view class="content">
+    <text class="sort">{{classifyName}}</text>
+    <text class="last-update">{{lastUpdateTime}}</text>
+    <view class="synopsis">
+      <view class="label">简介</view>
+      <text>{{synopsis}}</text>
+    </view>
+
+    <view class="last_chapter">
+      <view class="label">最新章节</view>
+      <text>{{lastUpdateName}}</text>
+    </view>
+  </view>
+
+  <view class="footer">
+    <button class="add" wx:if="{{!added}}" bind:tap="onAddNovel">添加</button>
+    <button class="to-read" wx:else="{{!added}}" bind:tap="onToRead">去阅读</button>
+  </view>
+</view>

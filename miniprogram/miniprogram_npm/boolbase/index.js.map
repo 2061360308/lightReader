@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.js"],"names":[],"mappings":";;;;;;;AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA","file":"index.js","sourcesContent":["module.exports = {\n\ttrueFunc: function trueFunc(){\n\t\treturn true;\n\t},\n\tfalseFunc: function falseFunc(){\n\t\treturn false;\n\t}\n};"]}

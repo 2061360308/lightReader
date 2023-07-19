@@ -1,0 +1,17 @@
+[
+  {
+    "name": "user_update",
+    "value": {
+      "type": "update",
+      "arg": {
+        "nickName": "盧瞳"
+      }
+    }
+  },
+  {
+    "name": "queryUser",
+    "value": {
+      "type": "queryUser"
+    }
+  }
+]

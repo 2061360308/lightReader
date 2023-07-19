@@ -1,0 +1,211 @@
+/* pages/read.wxss */
+
+.main{
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  min-height: 100%;
+}
+
+.status-bar, .navigation-bar{
+  position: fixed;
+}
+
+.status-bar, .status-bar-placeholder, .navigation-bar{
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* border-bottom: 1rpx #000 solid; */
+  z-index: 20000;  /*不加这个会透明*/
+}
+
+.status-bar-placeholder{
+  position: relative;
+}
+
+.navigation-bar{
+  height: 80rpx;
+}
+
+.navigation-bar .back-button{
+  position: absolute;
+  left: 20rpx;
+  top: 20rpx;
+}
+
+.navigation-bar .title{
+  position:absolute;
+  width: 100%;
+  text-align: center;
+  line-height: 80rpx;
+  font-size: 35rpx;
+}
+
+.background{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.operate{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.popup-menu{
+  width: 100%;
+  height: 400rpx;
+  color: #000;
+}
+
+.font-size{
+  position: relative;
+}
+
+.font-size .label{
+  position: absolute;
+  left: 40rpx;
+  top: 44rpx;
+}
+
+.font-size .min{
+  position: absolute;
+  left: 120rpx;
+  top: 34rpx;
+  line-height: 60rpx;
+  width: 160rpx;
+  height: 60rpx;
+  border: 2rpx #000 solid;
+  border-radius: 60rpx;
+}
+
+.font-size .max{
+  position: absolute;
+  left: 374rpx;
+  top: 34rpx;
+  line-height: 60rpx;
+  width: 160rpx;
+  height: 60rpx;
+  border: 2rpx #000 solid;
+  border-radius: 60rpx;
+}
+
+.current-font-size{
+  position: absolute;
+  left: 300rpx;
+  top: 38rpx;
+  font-size: 36rpx;
+}
+
+.current-font-family{
+  position: absolute;
+  left: 554rpx;
+  top: 34rpx;
+  line-height: 60rpx;
+  width: 160rpx;
+  height: 60rpx;
+  border: 2rpx #000 solid;
+  border-radius: 60rpx;
+  font-size: 25rpx;
+}
+
+.background-color .label{
+  position: absolute;
+  left: 40rpx;
+  top: 126rpx;
+}
+
+.background-color-color{
+  position: absolute;
+  top: 116rpx;
+  left: 120rpx;
+  display: flex;
+  justify-content:left;
+}
+
+.background-color .color{
+    width: 60rpx;
+    height: 60rpx;
+    /* border: 1rpx #000 solid; */
+    border-radius: 60rpx;
+    margin-right: 20rpx;
+}
+
+.background-color .current{
+    width: 60rpx;
+    height: 60rpx;
+    border: 4rpx #f84545 solid;
+    border-radius: 60rpx;
+    margin-right: 20rpx;
+}
+
+.progress{
+  position: relative;
+}
+
+.progress button{
+  position: absolute;
+  width: 140rpx;
+  height: 50rpx;
+  /* border: 2rpx #000 solid; */
+  top: 206rpx;
+  line-height: 50rpx;
+  font-size: 27rpx;
+}
+
+.progress .last{
+  left: 40rpx;
+}
+
+.progress .slider{
+  position: absolute;
+  /* background-color: antiquewhite; */
+  padding: 0;
+  top: 210rpx;
+  left: 180rpx;
+  width: 390rpx;
+  height: 40rpx;
+}
+
+.progress .next{
+  left: 564rpx;
+}
+
+.menu-button{
+  position: absolute;
+  top: 298rpx;
+  display: flex;
+  justify-content:left;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+}
+
+.menu-button button{
+  border: 2rpx #000 solid;
+  width: 168rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  margin-right: 4rpx;
+}
+
+/* .novel-page{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: royalblue;
+}
+
+.novel-page .title{
+  position: absolute;
+  top: 0rpx;
+}
+
+.novel-page .content{
+  position: absolute;
+  top: 0rpx;
+} */
