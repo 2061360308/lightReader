@@ -58,12 +58,24 @@
   <!--滚动层, 最下方的滚动容器-->
   <scroll-view scroll-y="{{true}}">
     <view class="novel-page">
-      <!--小说文本内容-->
-      <text class="title" style="font-size: {{read_config.font_size + 2}}px; font-weight: bold;">{{chapterTitle}}</text>
-      <text>\n</text>
-      <text class="content" style="font-size: {{read_config.font_size}}px;">
-        　{{chapterContent}}
-      </text>
+        <!--小说文本内容-->
+        <!--前一章-->
+        <view id="frontChapter">
+            <text class="title" style="font-size: {{read_config.font_size + 2}}px; font-weight: bold;">{{frontChapterTitle}}</text>
+            <text>\n</text>
+            <text class="content" style="font-size: {{read_config.font_size}}px;">
+        　      {{frontChapterContent}}
+            </text>
+        </view>
+        <!--后一章-->
+        <view id="afterChapter">
+            <text class="title" style="font-size: {{read_config.font_size + 2}}px; font-weight: bold;">{{afterChapterTitle}}</text>
+            <text>\n</text>
+            <text class="content" style="font-size: {{read_config.font_size}}px;">
+        　      {{afterChapterContent}}
+            </text>
+        </view>
+        <!--后一章-->
     </view>
   </scroll-view>
 </view>

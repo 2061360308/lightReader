@@ -6,7 +6,7 @@
   <view class="result" wx:if="{{!searching}}" bind:tap="onSearchDetail">
     <t-cell wx:for="{{resultList}}" data-url="{{item.bookUrl}}" title="{{item.bookName}}" hover note="{{item.authorName}}" arrow />
   </view>
-  <view class="loading" wx:else="{{!searching}}">
+  <view class="loading" wx:else="{{searching}}">
     <t-skeleton theme="paragraph" animation="gradient" loading="{{true}}" row-col="{{[{ width: '20%' },{ width: '70%' },1,1,1,{ width: '40%' },1,1,1,1]}}"></t-skeleton>
   </view>
 </view>

@@ -42,7 +42,7 @@ async function get_novel_list(keyword) {
     // 获取书名和url
     $('tr td[class=odd] a').each((index, item) => {
         book_name_list.push(item.children[0].data)
-        book_url_list.push(this.target_url + item.attribs["href"])
+        book_url_list.push(webSiteUrl + item.attribs["href"])
     })
     // 获取作者名
     $('tr').each((index, item) => {
@@ -76,7 +76,7 @@ async function get_novel_intro(novelUrl) {
     let last_update_name = $($('dl dd a').eq(0)).text() // 最新的章节
     let book_intro = $($('div[id=intro] p').eq(0)).text() // 小说简介
     let book_cover_url = $('div[id=fmimg] img').attr("src") // 小说封面地址
-    let first_chapter_url = this.target_url + $($('div[id=list] dd').eq(9).html()).attr('href') // 第一章地址
+    let first_chapter_url = webSiteUrl + $($('div[id=list] dd').eq(9).html()).attr('href') // 第一章地址
     let classify_name = $($('div[class=con_top] a').eq(2)).text() // 分类名称
 
     // console.log("author_name",author_name)
@@ -124,8 +124,8 @@ async function get_chapter_content(chapter_url) {
 
     let chapter_title = $('div[class=bookname] h1').text() //章节标题
     let chapter_content = $('div[id=content]').html() //章节内容
-    let prev_chapter_url = this.target_url + $('a:contains(上一章)').attr('href') // 上一章节url地址
-    let next_chapter_url = this.target_url + $('a:contains(下一章)').attr('href') // 上一章节url地址
+    let prev_chapter_url = webSiteUrl + $('a:contains(上一章)').attr('href') // 上一章节url地址
+    let next_chapter_url = webSiteUrl + $('a:contains(下一章)').attr('href') // 上一章节url地址
 
     // 判断上一章和下一章是否存在
     if (!prev_chapter_url.endsWith(".html")) {

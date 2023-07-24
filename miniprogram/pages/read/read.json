@@ -5,5 +5,5 @@
     "t-icon": "tdesign-miniprogram/icon/icon"
   },
   "navigationStyle": "custom",
-  "onReachBottomDistance": 100
+  "onReachBottomDistance": 0
 }
