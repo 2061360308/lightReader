@@ -31,7 +31,9 @@ App({
 
           
           console.info("后端数据加载完毕",this.globalData.userData)
-          this.userInitCallBack(this.globalData.userData);
+          if(typeof(this.userInitCallBack)=="function"){ // 判断回调方法是否存在
+            this.userInitCallBack(this.globalData.userData);
+          }
           console.info("用户身份初始化完毕", this.globalData.userData)
         },
         fail: err=>{
