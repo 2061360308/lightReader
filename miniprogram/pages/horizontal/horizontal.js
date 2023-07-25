@@ -94,7 +94,7 @@ Page({
             dark: false, // 日间, 夜间模式
             font_size: 20, // 字号
             font_family: "", // 字体
-            mode: "scroll", // 阅读翻页模式
+            flip_mode: "scroll", // 阅读翻页模式
             line_height_rate: "1.5",  // 行间距比率
         },
         currentBgColorIndex: 2,  // 当前背景颜色索引
@@ -246,6 +246,13 @@ Page({
         }else if(mode === "narrow"){
             read_config_.line_height_rate = 1
         }
+        this.setData({
+            read_config: read_config_
+        })
+    },
+    onDarkChange(){
+        let read_config_ = this.data.read_config
+        read_config_.dark = ! read_config_.dark
         this.setData({
             read_config: read_config_
         })
