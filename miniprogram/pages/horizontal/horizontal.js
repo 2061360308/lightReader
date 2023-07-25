@@ -116,6 +116,7 @@ Page({
             "#c7decc",
             "#ebebe4"],
         content: "",  // 章节内容
+        chapter_name:"第一章 我好棒啊,真不错呢哈哈哈哈天噜啦",  // 章节名称
         novelTitle: "测试小说标题"  // 当前小说书名
     },
 

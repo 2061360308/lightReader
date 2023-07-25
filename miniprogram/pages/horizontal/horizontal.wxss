@@ -96,7 +96,7 @@ page {
     left: 40rpx;
 }
 
-.progress .slider {
+.progress .chapter_name {
     position: absolute;
     /* background-color: antiquewhite; */
     padding: 0;
@@ -104,6 +104,14 @@ page {
     left: 180rpx;
     width: 390rpx;
     height: 40rpx;
+    text-align: center;
+    line-height: 40rpx;
+    font-size: 24rpx;
+    /* 超出隐藏 不换行 */
+    overflow: hidden;
+    white-space: nowrap;
+    /* 文字超出宽度则显示ellipsis省略号 */
+    text-overflow: ellipsis;
 }
 
 .progress .next {
