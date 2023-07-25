@@ -72,7 +72,74 @@ page {
     z-index: 1000;
 }
 
-.popup-menu {
+.popup-sample-menu {
+    width: 100%;
+    height: 200rpx;
+    color: #000;
+}
+
+.progress {
+    position: relative;
+}
+
+.progress button {
+    position: absolute;
+    width: 140rpx;
+    height: 50rpx;
+    /* border: 2rpx #000 solid; */
+    top: 24rpx;
+    line-height: 50rpx;
+    font-size: 27rpx;
+}
+
+.progress .last {
+    left: 40rpx;
+}
+
+.progress .slider {
+    position: absolute;
+    /* background-color: antiquewhite; */
+    padding: 0;
+    top: 26rpx;
+    left: 180rpx;
+    width: 390rpx;
+    height: 40rpx;
+}
+
+.progress .next {
+    left: 564rpx;
+}
+
+.menu-button {
+    position: absolute;
+    bottom: 20rpx;
+    display: flex;
+    justify-content: left;
+    padding-left: 40rpx;
+    padding-right: 40rpx;
+}
+
+.menu-button button {
+    /* border: 2rpx #000 solid; */
+    width: 168rpx;
+    height: 70rpx;
+    margin-right: 4rpx;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-button button view{
+    font-size: 46rpx;
+    font-weight: bold;
+    line-height: 46rpx;
+}
+
+.menu-button button text{
+    font-size: 24rpx;
+    line-height: 24rpx;
+}
+
+.popup-entire-menu{
     width: 100%;
     height: 400rpx;
     color: #000;
@@ -80,12 +147,14 @@ page {
 
 .font-size {
     position: relative;
+    top: 10rpx;
 }
 
 .font-size .label {
     position: absolute;
     left: 40rpx;
     top: 44rpx;
+    font-size: 26rpx;
 }
 
 .font-size .min {
@@ -129,18 +198,68 @@ page {
     font-size: 25rpx;
 }
 
+.line-space{
+    position: relative;
+    top: 120rpx;
+    /* background-color: aqua; */
+    height: 40rpx;
+    padding-bottom: 30rpx;
+}
+
+.line-space .label{
+    position: absolute;
+    left: 40rpx;
+    top: 10rpx;
+    line-height: 40rpx;
+    font-size: 26rpx;
+}
+
+.line-space .line-space-item{
+    display: flex;
+    justify-content: left;
+    width: 400rpx;
+    position: absolute;
+    left: 120rpx;
+    top: 0rpx
+}
+
+.line-space .line-space-item button{
+    margin-right: 20rpx;
+}
+
+.line-space .line-space-item button view{
+    font-size: 60rpx;
+    line-height: 60rpx;
+}
+
+.background-color{
+    position: relative;
+    top: 120rpx;
+    /* background-color: blueviolet; */
+    /* border: 2px #000 solid; */
+    height: 20px;
+    padding-bottom: 30rpx;
+}
+
 .background-color .label {
     position: absolute;
     left: 40rpx;
-    top: 126rpx;
+    top: 10rpx;
+    width: 60rpx;
+    font-size: 26rpx;
 }
 
-.background-color-color {
+.background-color scroll-view{
+    width: 610rpx;
     position: absolute;
-    top: 116rpx;
+    top: 0rpx;
     left: 120rpx;
+}
+
+.background-color-box {
     display: flex;
     justify-content: left;
+    width: calc(80rpx * 16);
 }
 
 .background-color .color {
@@ -159,53 +278,39 @@ page {
     margin-right: 20rpx;
 }
 
-.progress {
+.flip-mode{
     position: relative;
+    top: 140rpx;
+    /* background-color: #f84545; */
+    height: 40px;
 }
 
-.progress button {
+.flip-mode .label{
     position: absolute;
-    width: 140rpx;
-    height: 50rpx;
-    /* border: 2rpx #000 solid; */
-    top: 206rpx;
-    line-height: 50rpx;
-    font-size: 27rpx;
-}
-
-.progress .last {
     left: 40rpx;
+    top: 0rpx;
+    width: 60rpx;
+    font-size: 26rpx;
 }
 
-.progress .slider {
+.flip-mode .flip-mode-item{
     position: absolute;
-    /* background-color: antiquewhite; */
-    padding: 0;
-    top: 210rpx;
-    left: 180rpx;
-    width: 390rpx;
-    height: 40rpx;
-}
-
-.progress .next {
-    left: 564rpx;
-}
-
-.menu-button {
-    position: absolute;
-    top: 298rpx;
     display: flex;
     justify-content: left;
-    padding-left: 40rpx;
-    padding-right: 40rpx;
+    left: 120rpx;
 }
 
-.menu-button button {
-    border: 2rpx #000 solid;
-    width: 168rpx;
-    height: 60rpx;
+.flip-mode .flip-mode-item button{
+    width: 220rpx;
+    font-size: 36rpx;
     line-height: 60rpx;
-    margin-right: 4rpx;
+    border: 2rpx #000 solid;
+    border-radius: 20rpx;
+    margin-right: 60rpx;
+}
+
+.flip-mode .flip-mode-item button view{
+    
 }
 
 .content-box{

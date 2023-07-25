@@ -7,7 +7,7 @@
     <!--状态栏的占位-->
     <view class="status-bar-placeholder" style="height: {{status_bar_height}}px;"></view>
     <!--标题栏-->
-    <view class="navigation-bar" wx:if="{{visible}}" style="top: {{status_bar_height}}px; background-color: {{read_config.background_color}};">
+    <view class="navigation-bar" wx:if="{{sample_menu_visible}}" style="top: {{status_bar_height}}px; background-color: {{read_config.background_color}};">
         <view class="navigation-bar-inner">
             <view class="title">
                 {{novelTitle}}
@@ -22,26 +22,14 @@
     <!--内容层-->
     <view class="content-box" style="top: {{status_bar_height}}px; height: {{pageHeight}}px;">
         <view class="page" style="transform: translateX({{- turnPageWidth * (pageIndex-1)}}px);">
-            <text bind:tap="onClick" id="content" style="font-size: {{read_config.font_size}}px;">开始|{{content}}|结束</text>
+            <text bind:tap="onClick" id="content" 
+                style="font-size: {{read_config.font_size}}px; line-height: {{read_config.font_size * read_config.line_height_rate}}px"
+            >开始|{{content}}|结束</text>
         </view>
     </view>
     <!--弹出层, 弹出下方菜单选项-->
-    <t-popup visible="{{visible}}" bind:visible-change="onVisibleChange" placement="bottom">
-        <view class="popup popup-menu" style="background-color: {{read_config.background_color}};">
-            <view class="font-size">
-                <text class="label">字号</text>
-                <button class="min" bind:tap="onFontSizeDecrease">A-</button>
-                <text class="current-font-size">{{read_config.font_size}}</text>
-                <button class="max" bind:tap="onFontSizeIncrease">A+</button>
-                <button class="current-font-family">汉仪楷体</button>
-            </view>
-            <view class="background-color">
-                <text class="label">背景</text>
-                <view class="background-color-color">
-                    <view index="{{index}}" class="{{ (index == currentBgColorIndex) ? 'color current' : 'color'}}" wx:for="{{background_color_list}}" data-color="{{item}}" style="background-color:{{item}};" bind:tap="onBackgroundColorChange">
-                    </view>
-                </view>
-            </view>
+    <t-popup visible="{{sample_menu_visible}}" bind:visible-change="onSampleMenuVisibleChange" placement="bottom">
+        <view class="popup popup-sample-menu" style="background-color: {{read_config.background_color}};">
             <view class="progress">
                 <button class="last">上一章</button>
                 <!--不能直接给组件定位, 取巧把他放入容器, 再对容器定位了-->
@@ -51,13 +39,47 @@
                 <button class="next">下一章</button>
             </view>
             <view class="menu-button">
-                <button>目录</button>
-                <button>日间</button>
-                <button>翻页</button>
-                <button>更多</button>
+                <button><view class="icon-tingshu-mulu"/><text>目录</text></button>
+                <button><view class="icon-bookmarks"/><text>书签</text></button>
+                <button><view class="icon-rijianmoshixhdpi"/><text>日间</text></button>
+                <button bind:tap="onSettingButtonClick"><view class="icon-yueduye-shezhi"/><text>设置</text></button>
             </view>
 
         </view>
     </t-popup>
-
+    <t-popup visible="{{entire_menu_visible}}" bind:visible-change="onEntireMenuVisibleChange" placement="bottom">
+        <view class="popup popup-entire-menu" style="background-color: {{read_config.background_color}};">
+            <view class="font-size">
+                <text class="label">字号</text>
+                <button class="min" bind:tap="onFontSizeDecrease">A-</button>
+                <text class="current-font-size">{{read_config.font_size}}</text>
+                <button class="max" bind:tap="onFontSizeIncrease">A+</button>
+                <button class="current-font-family">汉仪楷体</button>
+            </view>
+            <view class="line-space">
+                <text class="label">行间距</text>
+                <view class="line-space-item" bind:tap="onLineHeightChange">
+                    <button data-mode="wide"><view class="icon-space-wide"/></button>
+                    <button data-mode="center"><view class="icon-space-centre"/></button>
+                    <button data-mode="narrow"><view class="icon-space-narrow"/></button>
+                </view>
+            </view>
+            <view class="background-color">
+                <text class="label">背景</text>
+                <scroll-view scroll-x="true">
+                    <view class="background-color-box">
+                        <view index="{{index}}" class="{{ (index == currentBgColorIndex) ? 'color current' : 'color'}}" wx:for="{{background_color_list}}" data-color="{{item}}" style="background-color:{{item}};" bind:tap="onBackgroundColorChange">
+                        </view>
+                    </view>
+                </scroll-view>
+            </view>
+            <view class="flip-mode">
+                <text class="label">翻页模式</text>
+                <view class="flip-mode-item">
+                    <button>垂直滚动</button>
+                    <button>水平滑动</button>
+                </view>
+            </view>
+        </view>
+    </t-popup>
 </view>

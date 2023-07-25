@@ -83,7 +83,8 @@ Page({
      * 页面的初始数据
      */
     data: {
-        visible: false, // 弹出面板显隐
+        sample_menu_visible: false, // 底部简单菜单面板显隐
+        entire_menu_visible: false,  // 底部全部菜单面板显隐
         status_bar_height: 0, // 标题栏高
         pageHeight: 0, // 页面高
         turnPageWidth: 0, // 翻页时一页需要偏移的宽度
@@ -93,15 +94,27 @@ Page({
             dark: false, // 日间, 夜间模式
             font_size: 20, // 字号
             font_family: "", // 字体
-            mode: "scroll" // 阅读翻页模式
+            mode: "scroll", // 阅读翻页模式
+            line_height_rate: "1.5",  // 行间距比率
         },
         currentBgColorIndex: 2,  // 当前背景颜色索引
-        background_color_list: ["#e0e0e0", // 可选背景色列表
+        // 可选背景色列表
+        background_color_list: ["#e0e0e0",
             "#f5f1e8",
             "#f4ecd1",
             "#daf2da",
-            "#dceaee"
-        ],
+            "#dceaee",
+            "#ffffff",
+            "#faf9de",
+            "#fff2e2",
+            "#fde6e0",
+            "#e3edcd",
+            "#dce2f1",
+            "#e9ebfe",
+            "#eaeaef",
+            "#ccffcc",
+            "#c7decc",
+            "#ebebe4"],
         content: "",  // 章节内容
         novelTitle: "测试小说标题"  // 当前小说书名
     },
@@ -140,7 +153,7 @@ Page({
         // 点击中间
         if (screenWidth * 0.3 < x & x < screenWidth * 0.7) {
             this.setData({
-                visible: true
+                sample_menu_visible: true
             })
         }
         // 点击左侧
@@ -154,9 +167,9 @@ Page({
             this.turnPage(1)
         }
     },
-    onVisibleChange(e) {
+    onSampleMenuVisibleChange(e) {
         this.setData({
-            visible: e.detail.visible,
+            sample_menu_visible: e.detail.visible,
         });
     },
     onBackIconTap() {
@@ -212,6 +225,30 @@ Page({
         // 同步云端数据
         app.globalData.userData.read_config = this.data.read_config
         app.updataReadConfig()
+    },
+    onSettingButtonClick(){
+        this.setData({
+            entire_menu_visible: true
+        })
+    },
+    onEntireMenuVisibleChange(e){
+        this.setData({
+            entire_menu_visible: e.detail.visible,
+        });
+    },
+    onLineHeightChange(data){
+        let mode = data.target.dataset.mode
+        let read_config_ = this.data.read_config
+        if (mode === "center"){
+            read_config_.line_height_rate = 1.5
+        }else if(mode === "wide"){
+            read_config_.line_height_rate = 2
+        }else if(mode === "narrow"){
+            read_config_.line_height_rate = 1
+        }
+        this.setData({
+            read_config: read_config_
+        })
     },
     computePageTotalNum() {
         // 计算章节内容总页数
