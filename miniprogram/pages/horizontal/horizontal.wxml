@@ -21,10 +21,10 @@
     <view class="operate" bindtap="onOperateClicked"></view>
     <!--内容层-->
     <view class="content-box" style="top: {{status_bar_height}}px; height: {{pageHeight}}px;">
-        <view class="page" style="transform: translateX({{- turnPageWidth * (pageIndex-1)}}px);">
+        <view class="page" style="transform: translateX({{- turnPageWidth * (pageIndex-1)}}px); transition:  {{ hasTransition ? '.4s':'none 0s linear 0s'}};">
             <text bind:tap="onClick" id="content" 
                 style="font-size: {{read_config.font_size}}px; line-height: {{read_config.font_size * read_config.line_height_rate}}px; color: {{read_config.dark? '#b2b2b2':'#000'}};"
-            >开始|{{content}}|结束</text>
+            ><text style="font-size: {{read_config.font_size + 2}}px;">{{chapterTitle}}</text>\n{{chapterContent}}</text>
         </view>
     </view>
     <!--弹出层, 弹出下方菜单选项-->
@@ -34,7 +34,7 @@
                 <button class="last">上一章</button>
                 <!--不能直接给组件定位, 取巧把他放入容器, 再对容器定位了-->
                 <view class="chapter_name">
-                    {{chapter_name}}
+                    {{chapterTitle}}
                 </view>
                 <button class="next">下一章</button>
             </view>

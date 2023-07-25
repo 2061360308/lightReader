@@ -66,7 +66,7 @@ Component({
       let novel_url = data.detail.url
       console.log(novel_url)
       wx.redirectTo({
-        url: '/pages/read/read?url='+ novel_url
+        url: '/pages/horizontal/horizontal?url='+ novel_url
       })
     },
     onDelBook(data){

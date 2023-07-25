@@ -329,7 +329,6 @@ page {
 .page {
     columns: calc(100vw - 32px) 1;
     /* columns: 100vw 1; */
-    transition: .4s;
     height: 100%;
 }
 
