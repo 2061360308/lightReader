@@ -15,6 +15,10 @@ let currentNovelChapterList = null
 let chapterDataCaches = [] // 章节数据缓存
 let currentChapterIndex = 0 // 当前章节索引
 
+let slipFlag = false // 滑动事件限制标识 
+//记录触摸点的坐标信息
+let startPoint = 0  // 开始触摸的点
+
 const app = getApp()
 
 Page({
@@ -182,8 +186,11 @@ Page({
 
 
     },
-    onOperateClicked: function (data) {
+    onOperateClicked(data) {
         /* 操作层事件处理回调 */
+
+        // 触发点击事件, 取消滑动事件
+        slipFlag = false
 
         let x = data.detail.x // 屏幕点击点的横坐标
         // 点击中间
@@ -202,6 +209,28 @@ Page({
             console.info("点击右侧")
             this.turnPage(1)
         }
+    },
+    onOperateTouchStart(e){
+        console.log(e, "TouchStart触发")
+        //开启滑动事件
+        slipFlag = true
+        //记录触摸点的坐标信息
+        startPoint = e.touches[0]
+    },
+    onOperateTouchMove(e) {
+        // ----------------监听手势左右滑事件----------------
+        if (((startPoint.clientX - e.touches[e.touches.length - 1].clientX) > 80) && slipFlag) {
+            console.info("左滑事件");
+            slipFlag = false
+            this.turnPage(1) // 下一页
+            return
+        } else if (((startPoint.clientX - e.touches[e.touches.length - 1].clientX) < -80) && slipFlag) {
+            console.info("右滑事件");
+            slipFlag = false
+            this.turnPage(-1)  // 上一页
+            return
+        }
+        // ----------------监听手势左右滑事件end----------------
     },
     onSampleMenuVisibleChange(e) {
         this.setData({
