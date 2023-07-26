@@ -64,12 +64,13 @@ class User{
         nickName: this.openid.slice(0,6),  // 昵称
         avatarUrl: "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0",  // 头像地址
         novel_list:[],  // 小说列表
-        read_config:{   // 阅读配置
-          background_color: "	#f4ecd1", // 背景颜色
-          dark: false,  // 日间, 夜间模式
-          font_size: 20,  // 字号
-          font_family: "",  // 字体
-          mode: "scroll"  // 阅读翻页模式
+        read_config: { // 阅读配置
+            background_color: "#f4ecd1", // 背景颜色
+            dark: false, // 日间, 夜间模式
+            font_size: 20, // 字号
+            font_family: "", // 字体
+            flip_mode: "scroll", // 阅读翻页模式
+            line_height_rate: "1.5", // 行间距比率
         }
       }
       await this.addNew(new_data)
