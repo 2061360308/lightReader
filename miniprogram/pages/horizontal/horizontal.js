@@ -17,7 +17,7 @@ let currentChapterIndex = 0 // 当前章节索引
 
 let slipFlag = false // 滑动事件限制标识
 //记录触摸点的坐标信息
-let startPoint = 0  // 开始触摸的点
+let startPoint = 0 // 开始触摸的点
 
 const app = getApp()
 
@@ -145,16 +145,30 @@ Page({
 
                 // 缓存区添加下一个
                 console.log(chapterDataCaches)
+
+                // 校验下一章链接
+                let nextUrl = res.result.nextChapterUrl
+                if (nextUrl === null) {
+                    nextUrl = this.completeNextUrl(chapterDataCaches[currentChapterIndex].url)
+                }
+
                 chapterDataCaches.push({
                     content: null,
-                    url: res.result.nextChapterUrl,
+                    url: nextUrl,
                     title: null
                 })
 
                 // 缓存区添加上一个
+
+                // 校验上一章链接
+                let lastUrl = res.result.lastChapterUrl
+                if (lastUrl === null) {
+                    lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                }
+
                 chapterDataCaches.unshift({
                     content: null,
-                    url: res.result.prevChapterUrl,
+                    url: lastUrl,
                     title: null
                 })
 
@@ -211,7 +225,7 @@ Page({
             this.turnPage(1)
         }
     },
-    onOperateTouchStart(e){
+    onOperateTouchStart(e) {
         console.log(e, "TouchStart触发")
         //开启滑动事件
         slipFlag = true
@@ -228,7 +242,7 @@ Page({
         } else if (((startPoint.clientX - e.touches[e.touches.length - 1].clientX) < -80) && slipFlag) {
             console.info("右滑事件");
             slipFlag = false
-            this.turnPage(-1)  // 上一页
+            this.turnPage(-1) // 上一页
             return
         }
         // ----------------监听手势左右滑事件end----------------
@@ -327,10 +341,10 @@ Page({
             app.updataReadConfig() // 同步云端用户数据
         })
     },
-    onTurnLastChapter(){
+    onTurnLastChapter() {
         this.loadLastChapter(false)
     },
-    onTurnNextChapter(){
+    onTurnNextChapter() {
         this.loadNextChapter()
     },
     computePageTotalNum() {
@@ -374,26 +388,13 @@ Page({
             }
         }
     },
-    cacheNextChapter() {
-        // 检查是否给出下一章的链接
+    cacheNextChapter(successFun) {
+        /**
+         * 缓存下一章节
+         */
         let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
         console.info("准备缓存下一章", nextChapterData)
 
-        if (nextChapterData.url === null) {
-            console.info("尝试在currentNovelChapterList中查找下一项")
-            // 尝试在currentNovelChapterList中查找下一项
-            currentNovelChapterList.forEach((item, index) => {
-                if (item.chapterUrl === currentChapterUrl) {
-                    if (index < (currentNovelChapterList.length - 1)) {
-                        chapterDataCaches[currentChapterIndex + 1].url = item.chapterUrl
-                    }
-                }
-            })
-        }
-
-        nextChapterData = chapterDataCaches[currentChapterIndex + 1]
-
-        // 再次筛查是否为null值
         if (nextChapterData.url !== null) {
             // 进行缓冲下一个章节
             console.info("进行缓冲下一个章节")
@@ -414,209 +415,46 @@ Page({
                         title: res.result.chapterTitle,
                     }
 
-                    chapterDataCaches.push({
-                        url: res.result.nextChapterUrl,
-                        content: null,
-                        title: null
-                    })
-                },
-                fail: err => {
-                    console.error(err)
-                }
-            })
-        }
+                    // 缓存区添加下一个
 
-    },
-    loadNextChapter() {
-        // 判断下一章节的内容是否为空
-        let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
-
-        if (nextChapterData.content !== null) {
-            console.info("存在下一章缓存, 进行加载")
-
-            let chapterContent = chapterDataCaches[currentChapterIndex + 1].content
-            let chapterTitle = chapterDataCaches[currentChapterIndex + 1].title
-
-            // 更新页面
-            currentChapterIndex += 1
-
-            /* 脑残逻辑
-                1. 取消翻页动画
-                2. 将页面平移到0页
-                3. 恢复翻页动画
-                4. 将页面从0翻到1
-             目的:
-                在更换章节时能像切换页面那样有流畅的翻页动画过渡效果
-                实际效果很是炸裂, 应该找俩个容器更换来达到效果
-            */
-
-            // 先取消翻页动画再进行加载
-            this.setData({
-                hasTransition: false,
-            }, () => {
-                console.log(this.data.hasTransition)
-                this.setData({
-                    pageIndex: 0,
-                    chapterContent: chapterContent,
-                    chapterTitle: chapterTitle
-                }, () => {
-                    // 恢复翻页动画
-                    this.setData({
-                        hasTransition: true,
-                    }, () => {
-                        this.setData({
-                            pageIndex: 1,
-                            chapterContent: chapterContent,
-                            chapterTitle: chapterTitle
-                        })
-                    })
-                })
-            })
-
-            // 重新计算总页数
-            this.computePageTotalNum()
-
-            // 尝试缓存下一章
-            this.cacheNextChapter()
-
-
-        } else if (nextChapterData.url !== null) {
-            // 进行缓冲下一个章节
-            console.info("缓冲下一个章节")
-            wx.cloud.callFunction({
-                // 云函数名称
-                name: 'reptile',
-                // 传给云函数的参数
-                data: {
-                    "type": "get_chapter_content",
-                    "arg": chapterDataCaches[currentChapterIndex + 1].url
-                },
-                success: res => {
-                    console.log("下一章节数据缓存成功", res)
-
-                    chapterDataCaches[currentChapterIndex + 1] = {
-                        url: chapterDataCaches[currentChapterIndex + 1].url,
-                        content: res.result.chapterContent,
-                        title: res.result.chapterTitle,
+                    // 校验下一章链接
+                    let lastUrl = res.result.lastChapterUrl
+                    if (lastUrl === null) {
+                        lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
                     }
 
                     chapterDataCaches.push({
-                        url: res.result.nextChapterUrl,
+                        url: lastUrl,
                         content: null,
                         title: null
                     })
 
-                    console.info("缓存完毕, 进行加载")
+                    // 不需要添加上一个
 
-                    let chapterContent = chapterDataCaches[currentChapterIndex + 1].content
-                    let chapterTitle = chapterDataCaches[currentChapterIndex + 1].title
-
-                    // 更新页面
-                    currentChapterIndex += 1
-
-                    // 先取消翻页动画再进行加载
-                    this.setData({
-                        hasTransition: false,
-                    }, () => {
-                        console.log(this.data.hasTransition)
-                        this.setData({
-                            pageIndex: 0,
-                            chapterContent: chapterContent,
-                            chapterTitle: chapterTitle
-                        }, () => {
-                            // 恢复翻页动画
-                            this.setData({
-                                hasTransition: true,
-                            }, () => {
-                                this.setData({
-                                    pageIndex: 1,
-                                    chapterContent: chapterContent,
-                                    chapterTitle: chapterTitle
-                                })
-                            })
-                        })
-                    })
-
-                    // 重新计算总页数
-                    this.computePageTotalNum()
-
-                    // 尝试缓存下一章
-                    this.cacheNextChapter()
+                    // 判断成功回调函数是否存在
+                    if (successFun) {
+                        successFun() // 执行回调
+                    }
 
                 },
                 fail: err => {
                     console.error(err)
                 }
             })
-
-
-
-        } else {
-            console.info("啥也没有咋可能")
         }
+
     },
-    loadLastChapter(last_page=true) {
+    cacheLastChapter(successFun, last_page) {
         /**
-         * last_page=true 默认翻到最后一页
+         * 缓存上一章节
          */
+        let lastChapterData = chapterDataCaches[currentChapterIndex - 1]
+        console.info("准备缓存上一章", lastChapterData)
 
-         console.log(last_page)
+        if (lastChapterData.url !== null) {
+            // 进行缓冲下一个章节
+            console.info("进行缓冲下一个章节")
 
-        let nextChapterData = chapterDataCaches[currentChapterIndex - 1]
-
-        if (nextChapterData.content !== null) {
-            console.info("存在上一章缓存, 进行加载")
-
-            let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
-            let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
-
-            // 更新页面
-            currentChapterIndex -= 1
-
-            /* 脑残逻辑
-                1. 取消翻页动画
-                2. 将页面平移到0页
-                3. 恢复翻页动画
-                4. 将页面从0翻到1
-             目的:
-                在更换章节时能像切换页面那样有流畅的翻页动画过渡效果
-                实际效果很是炸裂, 应该找俩个容器更换来达到效果
-            */
-
-            // 先取消翻页动画再进行加载
-            this.setData({
-                hasTransition: false,
-            }, () => {
-                this.setData({
-                    chapterContent: chapterContent,
-                    chapterTitle: chapterTitle
-                }, () => {
-
-                    // 计算页面数
-                    this.computePageTotalNum()
-
-                    // 恢复翻页动画
-                    this.setData({
-                        pageIndex: pageTotalNum + 1,  // 翻到章节中的最后一页的后一页
-                    }, () => {
-                        let target_num = pageTotalNum
-                        if (! last_page){
-                            target_num = 1
-                        }
-                        this.setData({
-                            hasTransition: true,
-                            pageIndex: target_num,
-                            chapterContent: chapterContent,
-                            chapterTitle: chapterTitle
-                        })
-                    })
-                })
-            })
-
-
-        } else if (nextChapterData.url !== null) {
-            // 进行缓冲上一个章节
-            console.info("缓冲上一个章节")
             wx.cloud.callFunction({
                 // 云函数名称
                 name: 'reptile',
@@ -634,66 +472,197 @@ Page({
                         title: res.result.chapterTitle,
                     }
 
-                    // 缓存区添加下一个
-                    chapterDataCaches.push({
-                        url: res.result.nextChapterUrl,
-                        content: null,
-                        title: null
-                    })
+                    // 缓存区添加上一个
 
-                     // 缓存区添加上一个
+                    // 校验上一章链接
+                    let lastUrl = res.result.lastChapterUrl
+                    if (lastUrl === null) {
+                        lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                    }
+
                     chapterDataCaches.unshift({
                         content: null,
-                        url: res.result.prevChapterUrl,
+                        url: lastUrl,
                         title: null
                     })
 
                     // 前面加一, 当前index需要递增
                     currentChapterIndex += 1
 
-                    console.info("缓存完毕, 进行加载")
+                    // 不需要添加下一个
 
-                    let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
-                    let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
-
-                    // 更新页面
-                    currentChapterIndex -= 1
-
-                    // 先取消翻页动画再进行加载
-                    this.setData({
-                        hasTransition: false,
-                    }, () => {
-                        console.log(this.data.hasTransition)
-                        this.setData({
-                            chapterContent: chapterContent,
-                            chapterTitle: chapterTitle
-                        }, () => {
-                            // 重新计算总页数
-                            this.computePageTotalNum()
-
-                            // 恢复翻页动画
-                            this.setData({
-                                hasTransition: true,
-                            }, () => {
-                                this.setData({
-                                    pageIndex: pageTotalNum,
-                                    chapterContent: chapterContent,
-                                    chapterTitle: chapterTitle
-                                })
-                            })
-                        })
-                    })
+                    if (successFun) {
+                        successFun(last_page)
+                    }
 
                 },
                 fail: err => {
                     console.error(err)
                 }
             })
+        }
+    },
+    loadNextChapter() {
+        let self = this
 
+        function update_page() {
+            // 更新页面
+            let chapterContent = chapterDataCaches[currentChapterIndex + 1].content
+            let chapterTitle = chapterDataCaches[currentChapterIndex + 1].title
 
+            // 更新页面
+            currentChapterIndex += 1
+
+            /* 脑残逻辑
+                1. 取消翻页动画
+                2. 将页面平移到0页
+                3. 恢复翻页动画
+                4. 将页面从0翻到1
+             目的:
+                在更换章节时能像切换页面那样有流畅的翻页动画过渡效果
+                实际效果很是炸裂, 应该找俩个容器更换来达到效果
+            */
+
+            // 先取消翻页动画再进行加载
+            self.setData({
+                hasTransition: false,
+            }, () => {
+                console.log(self.data.hasTransition)
+                self.setData({
+                    pageIndex: 0,
+                    chapterContent: chapterContent,
+                    chapterTitle: chapterTitle
+                }, () => {
+                    // 恢复翻页动画
+                    self.setData({
+                        hasTransition: true,
+                    }, () => {
+                        self.setData({
+                            pageIndex: 1,
+                            chapterContent: chapterContent,
+                            chapterTitle: chapterTitle
+                        })
+                    })
+                })
+            })
+
+            // 重新计算总页数
+            self.computePageTotalNum()
+
+            // 尝试缓存下一章
+            self.cacheNextChapter()
+        }
+
+        // 判断下一章节的内容是否为空
+        let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
+
+        if (nextChapterData.content !== null) {
+            console.info("存在下一章缓存, 进行加载")
+            update_page()
+        } else if (nextChapterData.url !== null) {
+            // 进行缓冲下一个章节
+            console.info("缓冲下一个章节")
+            this.cacheNextChapter(update_page)
 
         } else {
             console.info("啥也没有咋可能")
         }
+    },
+    loadLastChapter(last_page = true) {
+        /**
+         * last_page=true 默认翻到最后一页
+         */
+
+        let self = this
+
+        function update_page(last_page) {
+            let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
+            let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
+
+            // 更新页面
+            currentChapterIndex -= 1
+
+            /* 脑残逻辑
+                1. 取消翻页动画
+                2. 将页面平移到0页
+                3. 恢复翻页动画
+                4. 将页面从0翻到1
+             目的:
+                在更换章节时能像切换页面那样有流畅的翻页动画过渡效果
+                实际效果很是炸裂, 应该找俩个容器更换来达到效果
+            */
+
+            // 先取消翻页动画再进行加载
+            self.setData({
+                hasTransition: false,
+            }, () => {
+                self.setData({
+                    chapterContent: chapterContent,
+                    chapterTitle: chapterTitle
+                }, () => {
+
+                    // 计算页面数
+                    self.computePageTotalNum()
+
+                    // 恢复翻页动画
+                    self.setData({
+                        pageIndex: pageTotalNum + 1, // 翻到章节中的最后一页的后一页
+                    }, () => {
+                        let target_num = pageTotalNum
+                        if (!last_page) {
+                            target_num = 1
+                        }
+                        self.setData({
+                            hasTransition: true,
+                            pageIndex: target_num,
+                            chapterContent: chapterContent,
+                            chapterTitle: chapterTitle
+                        })
+                    })
+                })
+            })
+        }
+
+        let nextChapterData = chapterDataCaches[currentChapterIndex - 1]
+
+        if (nextChapterData.content !== null) {
+            console.info("存在上一章缓存, 进行加载")
+            update_page(last_page)
+        } else if (nextChapterData.url !== null) {
+            // 进行缓冲上一个章节
+            console.info("缓冲上一个章节")
+            this.cacheLastChapter(update_page, last_page)
+        } else {
+            console.info("啥也没有咋可能")
+        }
+    },
+    completeNextUrl(url) {
+        /**
+         * 从章节列表中尝试补全 给出章节的 下一章的链接
+         */
+        currentNovelChapterList.forEach((item, index) => {
+            if (item.chapterUrl === url) {
+                if (index + 1 < currentNovelChapterList.length) {
+                    return currentNovelChapterList[index + 1].chapterUrl
+                }
+            }
+        })
+
+        return null
+    },
+
+    completelastUrl(url) {
+        /**
+         * 从章节列表中尝试补全 给出章节的 下一章的链接
+         */
+        currentNovelChapterList.forEach((item, index) => {
+            if (item.chapterUrl === url) {
+                if (index > 0) {
+                    return currentNovelChapterList[index - 1].chapterUrl
+                }
+            }
+        })
+
+        return null
     }
 })
