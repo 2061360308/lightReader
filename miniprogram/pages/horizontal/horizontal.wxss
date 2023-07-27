@@ -96,6 +96,10 @@ page {
     left: 40rpx;
 }
 
+.progress .dark-last{
+    color:var(--dark-text-primary)
+}
+
 .progress .chapter_name {
     position: absolute;
     /* background-color: antiquewhite; */
@@ -116,6 +120,10 @@ page {
 
 .progress .next {
     left: 564rpx;
+}
+
+.progress .dark-next{
+    color:var(--dark-text-primary)
 }
 
 .menu-button {
@@ -142,9 +150,17 @@ page {
     line-height: 46rpx;
 }
 
+.dark-menu-button button view{
+    color:var(--dark-text-primary)
+}
+
 .menu-button button text{
     font-size: 24rpx;
     line-height: 24rpx;
+}
+
+.dark-menu-button button text{
+    color:var(--dark-text-primary)
 }
 
 .popup-entire-menu{
@@ -185,6 +201,10 @@ page {
     height: 60rpx;
     border: 2rpx #000 solid;
     border-radius: 60rpx;
+}
+
+.dark-font-size button{
+    color:var(--dark-text-primary)
 }
 
 .current-font-size {
@@ -238,6 +258,10 @@ page {
 .line-space .line-space-item button view{
     font-size: 60rpx;
     line-height: 60rpx;
+}
+
+.dark-line-space .line-space-item button view{
+    color:var(--dark-text-primary)
 }
 
 .background-color{
@@ -317,8 +341,9 @@ page {
     margin-right: 60rpx;
 }
 
-.flip-mode .flip-mode-item button view{
-    
+.dark-flip-mode .flip-mode-item button{
+    color: var(--dark-text-primary);
+    border-color: var(--dark-text-primary);
 }
 
 .content-box{
@@ -354,6 +379,10 @@ page {
     font-size: 20rpx;
     line-height: 30px;
     margin-right: 20rpx;
+}
+
+.dark-bottom-status-bar text{
+    color: var(--dark-text-primary);
 }
 
 .popup-catalog{
@@ -406,6 +435,10 @@ page {
     border-bottom-right-radius: 3px;
 }
 
+.popup-catalog-box .dark-title-bar .select-label-box .item-current{
+    color: var(--dark-text-primary);
+}
+
 .popup-catalog-box .title-bar .select-label-box .order{
     line-height: 80rpx;
     font-size: 25rpx;
@@ -454,6 +487,10 @@ page {
     white-space: nowrap;
     /* 文字超出宽度则显示ellipsis省略号 */
     text-overflow: ellipsis;
+}
+
+.popup-catalog-box .dark-catalog .catalog-item{
+    color:var(--dark-text-primary)
 }
 
 .popup-catalog-box .catalog .current{

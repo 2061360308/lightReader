@@ -9,9 +9,10 @@
   "window": {
     "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarBackgroundColor": "@navBackgroundColor",
     "navigationBarTitleText": "起点阅读",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "@navTextStyle"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "themeLocation": "theme.json"
 }

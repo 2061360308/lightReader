@@ -1,0 +1,7 @@
+:root {
+    --dark-background: #343434;
+    --dark-text-primary: #b2b2b2;
+
+    --white-background: #f6f6f6;
+    --white-text-primary: #343434;
+}

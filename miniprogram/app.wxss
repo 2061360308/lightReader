@@ -1,4 +1,18 @@
 /**app.wxss**/
+page {
+    background: #f6f6f6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    --dark-background: #343434;
+    --dark-text-primary: #b2b2b2;
+
+    --white-background: #f6f6f6;
+    --white-text-primary: #343434;
+}
+
+
 .container {
     display: flex;
     flex-direction: column;
@@ -18,13 +32,6 @@ button::after {
     border: none;
 }
 
-
-page {
-    background: #f6f6f6;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
 
 /* iconfont */
 @import '/static/iconfont/iconfont.wxss';
