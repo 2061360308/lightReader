@@ -15,7 +15,7 @@ let currentNovelChapterList = null
 let chapterDataCaches = [] // 章节数据缓存
 let currentChapterIndex = 0 // 当前章节索引
 
-let slipFlag = false // 滑动事件限制标识 
+let slipFlag = false // 滑动事件限制标识
 //记录触摸点的坐标信息
 let startPoint = 0  // 开始触摸的点
 
@@ -33,6 +33,7 @@ Page({
         pageHeight: 0, // 页面高
         turnPageWidth: 0, // 翻页时一页需要偏移的宽度
         pageIndex: 1, // 当前页面索引
+        pageTotalNum: 1, // 总页数
         hasTransition: true, // 是否有翻页动画
         read_config: { // 阅读配置
             background_color: "#f4ecd1", // 背景颜色
@@ -82,7 +83,7 @@ Page({
                 screenWidth = res.screenWidth
                 console.log("设备像素比", res.pixelRatio)
                 let turnPageWidth = res.screenWidth
-                let pageHeight = res.screenHeight - res.statusBarHeight
+                let pageHeight = res.screenHeight - res.statusBarHeight - 30
 
                 self.setData({
                     status_bar_height: res.statusBarHeight,
@@ -326,12 +327,22 @@ Page({
             app.updataReadConfig() // 同步云端用户数据
         })
     },
+    onTurnLastChapter(){
+        this.loadLastChapter(false)
+    },
+    onTurnNextChapter(){
+        this.loadNextChapter()
+    },
     computePageTotalNum() {
         // 计算章节内容总页数
         wx.createSelectorQuery().select('#content').boundingClientRect(rect => {
             console.info(rect.width, screenWidth)
             pageTotalNum = Math.ceil(rect.width / screenWidth);
-            console.log(pageTotalNum)
+            /* pageTotalNum最主要还是在js中使用最多, 在页面中仅有一处显示需要, 所以增加了全局变量pageTotalNum
+               方便使用,不然每次更新值都是异步的很麻烦 */
+            this.setData({
+                pageTotalNum: pageTotalNum
+            })
         }).exec()
     },
     turnPage(direction) {
@@ -544,11 +555,17 @@ Page({
             console.info("啥也没有咋可能")
         }
     },
-    loadLastChapter() {
+    loadLastChapter(last_page=true) {
+        /**
+         * last_page=true 默认翻到最后一页
+         */
+
+         console.log(last_page)
+
         let nextChapterData = chapterDataCaches[currentChapterIndex - 1]
 
         if (nextChapterData.content !== null) {
-            console.info("存在下一章缓存, 进行加载")
+            console.info("存在上一章缓存, 进行加载")
 
             let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
             let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
@@ -582,9 +599,13 @@ Page({
                     this.setData({
                         pageIndex: pageTotalNum + 1,  // 翻到章节中的最后一页的后一页
                     }, () => {
+                        let target_num = pageTotalNum
+                        if (! last_page){
+                            target_num = 1
+                        }
                         this.setData({
                             hasTransition: true,
-                            pageIndex: pageTotalNum,
+                            pageIndex: target_num,
                             chapterContent: chapterContent,
                             chapterTitle: chapterTitle
                         })

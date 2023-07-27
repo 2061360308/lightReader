@@ -329,7 +329,7 @@ page {
 .page {
     columns: calc(100vw - 32px) 1;
     /* columns: 100vw 1; */
-    height: 100%;
+    /* height: calc(100% - 20px); */
 }
 
 .page text {
@@ -337,4 +337,21 @@ page {
     /* margin-left: 30rpx;
     margin-right: 30rpx; */
     /* height: 100vh; */
+}
+
+.bottom-status-bar{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 30px;
+    /* background-color: #f84545; */
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.bottom-status-bar text{
+    font-size: 20rpx;
+    line-height: 30px;
+    margin-right: 20rpx;
 }

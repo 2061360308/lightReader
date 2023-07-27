@@ -1,7 +1,6 @@
 {
     "usingComponents": {
         "t-popup": "tdesign-miniprogram/popup/popup",
-        "t-slider": "tdesign-miniprogram/slider/slider",
         "t-icon": "tdesign-miniprogram/icon/icon"
     },
     "navigationStyle": "custom"

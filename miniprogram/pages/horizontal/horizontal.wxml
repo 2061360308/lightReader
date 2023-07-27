@@ -21,22 +21,27 @@
     <view class="operate" bind:tap="onOperateClicked" bind:touchstart="onOperateTouchStart" bind:touchmove="onOperateTouchMove"></view>
     <!--内容层-->
     <view class="content-box" style="top: {{status_bar_height}}px; height: {{pageHeight}}px;">
-        <view class="page" style="transform: translateX({{- turnPageWidth * (pageIndex-1)}}px); transition:  {{ hasTransition ? '.4s':'none 0s linear 0s'}};">
+        <view class="page" style="height: {{pageHeight}}px; transform: translateX({{- turnPageWidth * (pageIndex-1)}}px); transition:  {{ hasTransition ? '.4s':'none 0s linear 0s'}};">
             <text bind:tap="onClick" id="content" 
                 style="font-size: {{read_config.font_size}}px; line-height: {{read_config.font_size * read_config.line_height_rate}}px; color: {{read_config.dark? '#b2b2b2':'#000'}};"
             ><text style="font-size: {{read_config.font_size + 2}}px;">{{chapterTitle}}</text>\n{{chapterContent}}</text>
         </view>
     </view>
+    <!--底部状态栏-->
+    <view class="bottom-status-bar">
+        <text>{{"本章 "+pageIndex +' / '+ pageTotalNum}}</text>
+        <text>{{chapterTitle}}</text>
+    </view>
     <!--弹出层, 弹出下方菜单选项-->
     <t-popup visible="{{sample_menu_visible}}" bind:visible-change="onSampleMenuVisibleChange" placement="bottom">
         <view class="popup popup-sample-menu" style="background-color: {{read_config.dark? '#343434': read_config.background_color}}; color: {{read_config.dark? '#b2b2b2':'#000'}};">
             <view class="progress">
-                <button class="last">上一章</button>
+                <button class="last" bind:tap="onTurnLastChapter">上一章</button>
                 <!--不能直接给组件定位, 取巧把他放入容器, 再对容器定位了-->
                 <view class="chapter_name">
                     {{chapterTitle}}
                 </view>
-                <button class="next">下一章</button>
+                <button class="next" bind:tap="onTurnNextChapter">下一章</button>
             </view>
             <view class="menu-button">
                 <button><view class="icon-tingshu-mulu"/><text>目录</text></button>
