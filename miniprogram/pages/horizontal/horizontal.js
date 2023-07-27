@@ -29,6 +29,7 @@ Page({
     data: {
         sample_menu_visible: false, // 底部简单菜单面板显隐
         entire_menu_visible: false, // 底部全部菜单面板显隐
+        catalog_visible: false, // 左侧目录面板显隐
         status_bar_height: 0, // 标题栏高
         pageHeight: 0, // 页面高
         turnPageWidth: 0, // 翻页时一页需要偏移的宽度
@@ -42,6 +43,7 @@ Page({
             font_family: "", // 字体
             flip_mode: "scroll", // 阅读翻页模式
             line_height_rate: "1.5", // 行间距比率
+            catalog_reverse_order: true,  // 目录倒序
         },
         currentBgColorIndex: 2, // 当前背景颜色索引
         // 可选背景色列表
@@ -64,6 +66,7 @@ Page({
         ],
         chapterContent: "", // 章节内容
         chapterTitle: "", // 章节名称
+        currentNovelChapterList: [], // 当前小说章节列表
         novelTitle: "" // 当前小说书名
     },
 
@@ -120,7 +123,10 @@ Page({
             },
             success: res => {
                 console.log("是成功了吗^^^^^^^^^^^^^^^^^^^^^", res)
-                // currentNovelChapterList = res.result.result
+                currentNovelChapterList = res.result
+                self.setData({
+                    currentNovelChapterList: currentNovelChapterList,
+                })
             },
             fail: err => {
                 console.log("出错来了:", err)
@@ -140,7 +146,7 @@ Page({
             success: res => {
                 console.log("章节数据", res)
 
-                chapterDataCaches[currentChapterIndex].title = res.result.chapterTitle
+                chapterDataCaches[currentChapterIndex].title = res.result.chapterTitle.trim()
                 chapterDataCaches[currentChapterIndex].content = res.result.chapterContent
 
                 // 缓存区添加下一个
@@ -332,6 +338,22 @@ Page({
     },
     onTurnNextChapter(){
         this.loadNextChapter()
+    },
+    onCatalogShow(){
+        this.setData({
+            catalog_visible:true,
+            sample_menu_visible:false
+        })
+    },
+    onCatalogVisibleChange(e){
+        this.setData({
+            catalog_visible: e.detail.visible,
+        });
+    },
+    onCatalogClose(){
+        this.setData({
+            catalog_visible: false,
+        });
     },
     computePageTotalNum() {
         // 计算章节内容总页数

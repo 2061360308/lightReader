@@ -71,6 +71,7 @@ class User{
             font_family: "", // 字体
             flip_mode: "scroll", // 阅读翻页模式
             line_height_rate: "1.5", // 行间距比率
+            catalog_reverse_order: true, // 目录倒序
         }
       }
       await this.addNew(new_data)

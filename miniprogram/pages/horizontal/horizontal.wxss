@@ -355,3 +355,97 @@ page {
     line-height: 30px;
     margin-right: 20rpx;
 }
+
+.popup-catalog{
+    width: 100vw;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+
+.popup-catalog-box{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* background-color:#f84545; */
+}
+
+.popup-catalog-box .title-bar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80rpx;
+    /* background-color:aqua; */
+    width: 100%;
+}
+
+.popup-catalog-box .title-bar .select-label-box{
+    position: absolute;
+    width: 100%;
+    /* text-align: center;
+    line-height: 80rpx;
+    font-size: 35rpx; */
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center;     /* 垂直居中 */
+}
+
+.popup-catalog-box .title-bar .select-label-box .item{
+    line-height: 80rpx;
+    margin-right: 20rpx;
+    font-size: 30rpx;
+    color: rgb(133, 133, 133);
+}
+
+.popup-catalog-box .title-bar .select-label-box .item-current{
+    font-size: 35rpx;
+    color: #000;
+    line-height: 60rpx;
+    border-bottom: 3px #f84545 solid;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.popup-catalog-box .title-bar .back{
+    position: absolute;
+    left: 20rpx;
+    top: 20rpx;
+}
+
+.popup-catalog-box .catalog{
+    position: absolute;
+    top: 80rpx;
+    /* background-color:brown; */
+    width: 100%;
+    height: calc(100% - 80rpx);
+    display: flex;
+    justify-content: left; /* 水平居中 */
+    flex-direction: column;
+    overflow-y: scroll;
+    /* 超出隐藏 不换行 */
+    overflow-x: hidden;
+    white-space: nowrap;
+    /* 文字超出宽度则显示ellipsis省略号 */
+    text-overflow: ellipsis;
+}
+
+.popup-catalog-box .catalog_reverse{
+    flex-direction:column-reverse !important;  /* 倒序排列 */
+}
+
+.popup-catalog-box .catalog .catalog-item{
+    height: 80rpx;
+    width: 100%;
+    /* background-color: aqua; */
+    margin-left: 6px;
+    margin-right: 6px;
+    line-height: 80rpx;
+    /* 超出隐藏 不换行 */
+    white-space: nowrap;
+    /* 文字超出宽度则显示ellipsis省略号 */
+    text-overflow: ellipsis;
+}
+
+.popup-catalog-box .catalog .current{
+    color: #f84545;
+}

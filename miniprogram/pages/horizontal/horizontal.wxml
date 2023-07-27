@@ -33,6 +33,7 @@
         <text>{{chapterTitle}}</text>
     </view>
     <!--弹出层, 弹出下方菜单选项-->
+    <!--简单菜单-->
     <t-popup visible="{{sample_menu_visible}}" bind:visible-change="onSampleMenuVisibleChange" placement="bottom">
         <view class="popup popup-sample-menu" style="background-color: {{read_config.dark? '#343434': read_config.background_color}}; color: {{read_config.dark? '#b2b2b2':'#000'}};">
             <view class="progress">
@@ -44,7 +45,7 @@
                 <button class="next" bind:tap="onTurnNextChapter">下一章</button>
             </view>
             <view class="menu-button">
-                <button><view class="icon-tingshu-mulu"/><text>目录</text></button>
+                <button bind:tap="onCatalogShow"><view class="icon-tingshu-mulu"/><text>目录</text></button>
                 <button><view class="icon-bookmarks"/><text>书签</text></button>
                 <button bind:tap="onDarkChange"><view class="{{read_config.dark? 'icon-yueduye-yejianmoshi':'icon-rijianmoshixhdpi'}}"/><text>{{read_config.dark? '夜间':'日间'}}</text></button>
                 <button bind:tap="onSettingButtonClick"><view class="icon-yueduye-shezhi"/><text>设置</text></button>
@@ -52,6 +53,7 @@
 
         </view>
     </t-popup>
+    <!--详细菜单-->
     <t-popup visible="{{entire_menu_visible}}" bind:visible-change="onEntireMenuVisibleChange" placement="bottom">
         <view class="popup popup-entire-menu" style="background-color: {{read_config.dark? '#343434': read_config.background_color}}; color: {{read_config.dark? '#b2b2b2':'#000'}};">
             <view class="font-size">
@@ -83,6 +85,34 @@
                 <view class="flip-mode-item">
                     <button>垂直滚动</button>
                     <button>水平滑动</button>
+                </view>
+            </view>
+        </view>
+    </t-popup>
+    <!--目录层-->
+    <t-popup visible="{{catalog_visible}}" bind:visible-change="onCatalogVisibleChange" close-btn="true" placement="left">
+        <view class="popup popup-catalog" style="background-color: {{read_config.dark? '#343434': read_config.background_color}}; color: {{read_config.dark? '#b2b2b2':'#000'}}; height: {{pageHeight + 30}}px;">
+            <view class="popup-catalog-box">
+                <!--从上面复制摘抄的标题栏-->
+                <view class="title-bar">
+                    <view class="select-label-box">
+                        <view class="item item-current">目录</view>
+                        <view class="item">书签</view>
+                        <view class="order">正序</view>
+                    </view>
+                    <view class="back" bind:tap="onCatalogClose">
+                        <t-icon name="chevron-left" size="48rpx" data-name="{{item}}" />
+                    </view>
+                </view>
+                <view class="{{read_config.catalog_reverse_order?'catalog catalog_reverse':'catalog'}}">
+                    <view 
+                        class="{{(item.chapterName === chapterTitle)? 'catalog-item current':'catalog-item'}} "
+                        data-a="{{read_config.catalog_reverse_order}}"
+                        wx:for="{{currentNovelChapterList}}"
+                        data-url="{{item.chapterUrl}}" 
+                        data-name="{{item.chapterName}}" 
+                        id="{{(item.chapterName === chapterTitle)? 'currentChapter':''}}"
+                        style="color: {{(item.chapterName === chapterTitle)? '#f84545':'#000'}};">{{item.chapterName}}</view>
                 </view>
             </view>
         </view>
