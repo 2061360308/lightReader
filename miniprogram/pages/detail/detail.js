@@ -105,7 +105,7 @@ Page({
         "last_update": bookInfo.lastUpdateTime
       })
       console.log(app.globalData.userData.novel_list)
-      app.updataUserNovelList()  // 更新数据库信息
+      app.updateUserNovelList()  // 更新数据库信息
       this.setData({
         added: true,
       })

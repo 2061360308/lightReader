@@ -10,7 +10,7 @@ let currentChapterContent = null
 let currentNovelUrl = null
 let currentNovelTitle = null
 let currentNovelIndex = null // 这是在用户novel_list中的index
-let currentNovelChapterList = null
+let currentNovelChapterList = []
 
 let chapterDataCaches = [] // 章节数据缓存
 let currentChapterIndex = 0 // 当前章节索引
@@ -81,7 +81,7 @@ Page({
         wx.getSystemInfoAsync({
             success(res) {
                 screenWidth = res.screenWidth
-                console.log("设备像素比", res.pixelRatio)
+                console.info("设备像素比", res.pixelRatio)
                 let turnPageWidth = res.screenWidth
                 let pageHeight = res.screenHeight - res.statusBarHeight - 30
 
@@ -119,11 +119,11 @@ Page({
                 "arg": currentNovelUrl
             },
             success: res => {
-                console.log("是成功了吗^^^^^^^^^^^^^^^^^^^^^", res)
-                // currentNovelChapterList = res.result.result
+                currentNovelChapterList = res.result
+                console.info("currentNovelChapterList", currentNovelChapterList)
             },
             fail: err => {
-                console.log("出错来了:", err)
+                console.error("出错来了:", err)
                 console.error(err)
             }
         })
@@ -138,13 +138,12 @@ Page({
                 "arg": chapterDataCaches[currentChapterIndex].url
             },
             success: res => {
-                console.log("章节数据", res)
+                console.info("章节数据", res)
 
                 chapterDataCaches[currentChapterIndex].title = res.result.chapterTitle
                 chapterDataCaches[currentChapterIndex].content = res.result.chapterContent
 
                 // 缓存区添加下一个
-                console.log(chapterDataCaches)
 
                 // 校验下一章链接
                 let nextUrl = res.result.nextChapterUrl
@@ -161,7 +160,7 @@ Page({
                 // 缓存区添加上一个
 
                 // 校验上一章链接
-                let lastUrl = res.result.lastChapterUrl
+                let lastUrl = res.result.prevChapterUrl
                 if (lastUrl === null) {
                     lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
                 }
@@ -175,9 +174,8 @@ Page({
                 // 前面加一, 当前index需要递增
                 currentChapterIndex += 1
 
-                console.log(chapterDataCaches)
 
-                console.log("设置内容", chapterDataCaches)
+                console.info("设置内容", chapterDataCaches)
                 self.setData({
                     read_config: app.globalData.userData.read_config,
                     chapterContent: chapterDataCaches[currentChapterIndex].content,
@@ -226,7 +224,6 @@ Page({
         }
     },
     onOperateTouchStart(e) {
-        console.log(e, "TouchStart触发")
         //开启滑动事件
         slipFlag = true
         //记录触摸点的坐标信息
@@ -289,7 +286,6 @@ Page({
         }
     },
     onBackgroundColorChange(data) {
-        console.log(data)
         let color = data.currentTarget.dataset.color
         this.changeCurrentBgColor(color)
     },
@@ -304,7 +300,7 @@ Page({
 
         // 同步云端数据
         app.globalData.userData.read_config = this.data.read_config
-        app.updataReadConfig()
+        app.updateReadConfig()
     },
     onSettingButtonClick() {
         this.setData({
@@ -329,7 +325,7 @@ Page({
         this.setData({
             read_config: read_config_
         }, () => {
-            app.updataReadConfig() // 同步云端用户数据
+            app.updateReadConfig() // 同步云端用户数据
         })
     },
     onDarkChange() {
@@ -338,7 +334,7 @@ Page({
         this.setData({
             read_config: read_config_
         }, () => {
-            app.updataReadConfig() // 同步云端用户数据
+            app.updateReadConfig() // 同步云端用户数据
         })
     },
     onTurnLastChapter() {
@@ -392,6 +388,7 @@ Page({
         /**
          * 缓存下一章节
          */
+        let self = this
         let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
         console.info("准备缓存下一章", nextChapterData)
 
@@ -407,7 +404,7 @@ Page({
                     "arg": chapterDataCaches[currentChapterIndex + 1].url
                 },
                 success: res => {
-                    console.log("下一章节数据缓存成功", res)
+                    console.info("下一章节数据缓存成功", res)
 
                     chapterDataCaches[currentChapterIndex + 1] = {
                         url: chapterDataCaches[currentChapterIndex + 1].url,
@@ -418,13 +415,13 @@ Page({
                     // 缓存区添加下一个
 
                     // 校验下一章链接
-                    let lastUrl = res.result.lastChapterUrl
-                    if (lastUrl === null) {
-                        lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                    let nextUrl = res.result.nextChapterUrl
+                    if (nextUrl === null) {
+                        nextUrl = self.completNextUrl(chapterDataCaches[currentChapterIndex].url)
                     }
 
                     chapterDataCaches.push({
-                        url: lastUrl,
+                        url: nextUrl,
                         content: null,
                         title: null
                     })
@@ -448,6 +445,8 @@ Page({
         /**
          * 缓存上一章节
          */
+
+        let self = this
         let lastChapterData = chapterDataCaches[currentChapterIndex - 1]
         console.info("准备缓存上一章", lastChapterData)
 
@@ -464,7 +463,7 @@ Page({
                     "arg": chapterDataCaches[currentChapterIndex - 1].url
                 },
                 success: res => {
-                    console.log("上一章节数据缓存成功", res)
+                    console.info("上一章节数据缓存成功", res)
 
                     chapterDataCaches[currentChapterIndex - 1] = {
                         url: chapterDataCaches[currentChapterIndex - 1].url,
@@ -475,9 +474,9 @@ Page({
                     // 缓存区添加上一个
 
                     // 校验上一章链接
-                    let lastUrl = res.result.lastChapterUrl
+                    let lastUrl = res.result.prevChapterUrl
                     if (lastUrl === null) {
-                        lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                        lastUrl = self.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
                     }
 
                     chapterDataCaches.unshift({
@@ -509,6 +508,7 @@ Page({
             // 更新页面
             let chapterContent = chapterDataCaches[currentChapterIndex + 1].content
             let chapterTitle = chapterDataCaches[currentChapterIndex + 1].title
+            let chapterUrl = chapterDataCaches[currentChapterIndex + 1].url
 
             // 更新页面
             currentChapterIndex += 1
@@ -527,7 +527,6 @@ Page({
             self.setData({
                 hasTransition: false,
             }, () => {
-                console.log(self.data.hasTransition)
                 self.setData({
                     pageIndex: 0,
                     chapterContent: chapterContent,
@@ -545,6 +544,12 @@ Page({
                     })
                 })
             })
+
+            // 更新云端阅读进度
+            app.globalData.userData.novel_list[currentNovelIndex].progress.name = chapterTitle
+            app.globalData.userData.novel_list[currentNovelIndex].progress.url = chapterUrl
+
+            app.updateUserNovelList()
 
             // 重新计算总页数
             self.computePageTotalNum()
@@ -578,6 +583,7 @@ Page({
         function update_page(last_page) {
             let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
             let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
+            let chapterUrl = chapterDataCaches[currentChapterIndex - 1].url
 
             // 更新页面
             currentChapterIndex -= 1
@@ -621,6 +627,12 @@ Page({
                     })
                 })
             })
+
+            // 更新云端阅读进度
+            app.globalData.userData.novel_list[currentNovelIndex].progress.name = chapterTitle
+            app.globalData.userData.novel_list[currentNovelIndex].progress.url = chapterUrl
+
+            app.updateUserNovelList()
         }
 
         let nextChapterData = chapterDataCaches[currentChapterIndex - 1]
@@ -651,9 +663,9 @@ Page({
         return null
     },
 
-    completelastUrl(url) {
+    completeLastUrl(url) {
         /**
-         * 从章节列表中尝试补全 给出章节的 下一章的链接
+         * 从章节列表中尝试补全 给出章节的 上一章的链接
          */
         currentNovelChapterList.forEach((item, index) => {
             if (item.chapterUrl === url) {

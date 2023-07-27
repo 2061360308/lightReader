@@ -218,7 +218,7 @@ Page({
 
         // 同步云端数据
         app.globalData.userData.read_config = this.data.read_config
-        app.updataReadConfig()
+        app.updateReadConfig()
     },
 
     cacheNextChapter() {
