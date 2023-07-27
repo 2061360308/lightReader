@@ -53,7 +53,7 @@ Page({
         "arg": thisUrl
       },
       success: res=>{
-        let result = res.result.result
+        let result = res.result
         bookInfo = result
         this.setData({
           cover_url: result.bookCoverUrl,
