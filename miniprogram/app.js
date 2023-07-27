@@ -47,7 +47,10 @@ App({
     };
   },
 
-  updataUserNovelList(){
+  updateUserNovelList(){
+    /**
+     * 更新云端小说列表
+     */
     wx.cloud.callFunction({
       // 云函数名称
       name: 'user',
@@ -66,7 +69,10 @@ App({
       }
     })
   },
-  updataUserName(){
+  updateUserName(){
+    /**
+     * 更新云端用户名
+     */
     wx.cloud.callFunction({
       // 云函数名称
       name: 'user',
@@ -85,7 +91,10 @@ App({
       }
     })
   },
-  updataReadConfig(){
+  updateReadConfig(){
+    /**
+     * 更新云端 read_config
+     */
     wx.cloud.callFunction({
       // 云函数名称
       name: 'user',

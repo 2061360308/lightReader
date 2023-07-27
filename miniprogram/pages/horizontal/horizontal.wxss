@@ -406,6 +406,12 @@ page {
     border-bottom-right-radius: 3px;
 }
 
+.popup-catalog-box .title-bar .select-label-box .order{
+    line-height: 80rpx;
+    font-size: 25rpx;
+    color: rgb(133, 133, 133);
+}
+
 .popup-catalog-box .title-bar .back{
     position: absolute;
     left: 20rpx;
@@ -429,9 +435,13 @@ page {
     text-overflow: ellipsis;
 }
 
+/* 
+
+很有趣的一个css属性, 可惜真机不支持
+
 .popup-catalog-box .catalog_reverse{
     flex-direction:column-reverse !important;  /* 倒序排列 */
-}
+/*}*/
 
 .popup-catalog-box .catalog .catalog-item{
     height: 80rpx;

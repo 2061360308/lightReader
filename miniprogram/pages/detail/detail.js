@@ -53,7 +53,7 @@ Page({
         "arg": thisUrl
       },
       success: res=>{
-        let result = res.result.result
+        let result = res.result
         bookInfo = result
         this.setData({
           cover_url: result.bookCoverUrl,
@@ -105,7 +105,7 @@ Page({
         "last_update": bookInfo.lastUpdateTime
       })
       console.log(app.globalData.userData.novel_list)
-      app.updataUserNovelList()  // 更新数据库信息
+      app.updateUserNovelList()  // 更新数据库信息
       this.setData({
         added: true,
       })

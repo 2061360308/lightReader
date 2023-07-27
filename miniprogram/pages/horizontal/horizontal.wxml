@@ -98,21 +98,21 @@
                     <view class="select-label-box">
                         <view class="item item-current">目录</view>
                         <view class="item">书签</view>
-                        <view class="order">正序</view>
+                        <view class="{{read_config.catalog_reverse_order? 'icon-daoxu':'icon-zhengxu'}} order " bind:tap="onCatalogReverseOrderChange">{{read_config.catalog_reverse_order? '倒序':'正序'}}</view>
                     </view>
                     <view class="back" bind:tap="onCatalogClose">
                         <t-icon name="chevron-left" size="48rpx" data-name="{{item}}" />
                     </view>
                 </view>
-                <view class="{{read_config.catalog_reverse_order?'catalog catalog_reverse':'catalog'}}">
+                <view class="catalog" bind:tap="onTurnChapter">
                     <view 
                         class="{{(item.chapterName === chapterTitle)? 'catalog-item current':'catalog-item'}} "
-                        data-a="{{read_config.catalog_reverse_order}}"
                         wx:for="{{currentNovelChapterList}}"
                         data-url="{{item.chapterUrl}}" 
                         data-name="{{item.chapterName}}" 
                         id="{{(item.chapterName === chapterTitle)? 'currentChapter':''}}"
-                        style="color: {{(item.chapterName === chapterTitle)? '#f84545':'#000'}};">{{item.chapterName}}</view>
+                        style="color: {{(item.chapterName === chapterTitle)? '#f84545':'#000'}};">{{item.chapterName}}
+                    </view>
                 </view>
             </view>
         </view>

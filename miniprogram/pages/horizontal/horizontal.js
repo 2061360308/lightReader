@@ -10,14 +10,14 @@ let currentChapterContent = null
 let currentNovelUrl = null
 let currentNovelTitle = null
 let currentNovelIndex = null // 这是在用户novel_list中的index
-let currentNovelChapterList = null
+let currentNovelChapterList = []
 
 let chapterDataCaches = [] // 章节数据缓存
 let currentChapterIndex = 0 // 当前章节索引
 
 let slipFlag = false // 滑动事件限制标识
 //记录触摸点的坐标信息
-let startPoint = 0  // 开始触摸的点
+let startPoint = 0 // 开始触摸的点
 
 const app = getApp()
 
@@ -43,7 +43,7 @@ Page({
             font_family: "", // 字体
             flip_mode: "scroll", // 阅读翻页模式
             line_height_rate: "1.5", // 行间距比率
-            catalog_reverse_order: true,  // 目录倒序
+            catalog_reverse_order: false, // 目录倒序
         },
         currentBgColorIndex: 2, // 当前背景颜色索引
         // 可选背景色列表
@@ -84,7 +84,7 @@ Page({
         wx.getSystemInfoAsync({
             success(res) {
                 screenWidth = res.screenWidth
-                console.log("设备像素比", res.pixelRatio)
+                console.info("设备像素比", res.pixelRatio)
                 let turnPageWidth = res.screenWidth
                 let pageHeight = res.screenHeight - res.statusBarHeight - 30
 
@@ -122,14 +122,15 @@ Page({
                 "arg": currentNovelUrl
             },
             success: res => {
-                console.log("是成功了吗^^^^^^^^^^^^^^^^^^^^^", res)
                 currentNovelChapterList = res.result
+
                 self.setData({
-                    currentNovelChapterList: currentNovelChapterList,
+                    currentNovelChapterList: currentNovelChapterList
                 })
+                console.info("currentNovelChapterList", currentNovelChapterList)
             },
             fail: err => {
-                console.log("出错来了:", err)
+                console.error("出错来了:", err)
                 console.error(err)
             }
         })
@@ -144,32 +145,44 @@ Page({
                 "arg": chapterDataCaches[currentChapterIndex].url
             },
             success: res => {
-                console.log("章节数据", res)
+                console.info("章节数据", res)
 
                 chapterDataCaches[currentChapterIndex].title = res.result.chapterTitle.trim()
                 chapterDataCaches[currentChapterIndex].content = res.result.chapterContent
 
                 // 缓存区添加下一个
-                console.log(chapterDataCaches)
+
+                // 校验下一章链接
+                let nextUrl = res.result.nextChapterUrl
+                if (nextUrl === null) {
+                    nextUrl = this.completeNextUrl(chapterDataCaches[currentChapterIndex].url)
+                }
+
                 chapterDataCaches.push({
                     content: null,
-                    url: res.result.nextChapterUrl,
+                    url: nextUrl,
                     title: null
                 })
 
                 // 缓存区添加上一个
+
+                // 校验上一章链接
+                let lastUrl = res.result.prevChapterUrl
+                if (lastUrl === null) {
+                    lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                }
+
                 chapterDataCaches.unshift({
                     content: null,
-                    url: res.result.prevChapterUrl,
+                    url: lastUrl,
                     title: null
                 })
 
                 // 前面加一, 当前index需要递增
                 currentChapterIndex += 1
 
-                console.log(chapterDataCaches)
 
-                console.log("设置内容", chapterDataCaches)
+                console.info("设置内容", chapterDataCaches)
                 self.setData({
                     read_config: app.globalData.userData.read_config,
                     chapterContent: chapterDataCaches[currentChapterIndex].content,
@@ -189,9 +202,6 @@ Page({
                 console.error(err)
             }
         })
-
-
-
     },
     onOperateClicked(data) {
         /* 操作层事件处理回调 */
@@ -217,8 +227,7 @@ Page({
             this.turnPage(1)
         }
     },
-    onOperateTouchStart(e){
-        console.log(e, "TouchStart触发")
+    onOperateTouchStart(e) {
         //开启滑动事件
         slipFlag = true
         //记录触摸点的坐标信息
@@ -234,7 +243,7 @@ Page({
         } else if (((startPoint.clientX - e.touches[e.touches.length - 1].clientX) < -80) && slipFlag) {
             console.info("右滑事件");
             slipFlag = false
-            this.turnPage(-1)  // 上一页
+            this.turnPage(-1) // 上一页
             return
         }
         // ----------------监听手势左右滑事件end----------------
@@ -281,7 +290,6 @@ Page({
         }
     },
     onBackgroundColorChange(data) {
-        console.log(data)
         let color = data.currentTarget.dataset.color
         this.changeCurrentBgColor(color)
     },
@@ -296,7 +304,7 @@ Page({
 
         // 同步云端数据
         app.globalData.userData.read_config = this.data.read_config
-        app.updataReadConfig()
+        app.updateReadConfig()
     },
     onSettingButtonClick() {
         this.setData({
@@ -321,7 +329,7 @@ Page({
         this.setData({
             read_config: read_config_
         }, () => {
-            app.updataReadConfig() // 同步云端用户数据
+            app.updateReadConfig() // 同步云端用户数据
         })
     },
     onDarkChange() {
@@ -330,30 +338,179 @@ Page({
         this.setData({
             read_config: read_config_
         }, () => {
-            app.updataReadConfig() // 同步云端用户数据
+            app.updateReadConfig() // 同步云端用户数据
         })
     },
-    onTurnLastChapter(){
+    onTurnLastChapter() {
         this.loadLastChapter(false)
     },
-    onTurnNextChapter(){
+    onTurnNextChapter() {
         this.loadNextChapter()
     },
-    onCatalogShow(){
+    onCatalogShow() {
         this.setData({
-            catalog_visible:true,
-            sample_menu_visible:false
+            catalog_visible: true,
+            sample_menu_visible: false
+        }, () => {
+            // 滚动到当前章节
+            wx.createSelectorQuery().select('#currentChapter').boundingClientRect(rect => {
+                // rect.id      // 节点的ID 
+                // rect.dataset // 节点的dataset 
+                // rect.left    // 节点的左边界坐标 
+                // rect.right   // 节点的右边界坐标 
+                // rect.top     // 节点的上边界坐标 
+                // rect.bottom  // 节点的下边界坐标 
+                // rect.width   // 节点的宽度 
+                // rect.height  // 节点的高度 
+                console.log("查询完毕准备滚动", rect)
+                wx.pageScrollTo({
+                    // selector: "#currentChapter",
+                    scrollTop: rect.top,
+                    duration: 300,
+                    success: () => {
+                        console.info("滚动成功", rect.top)
+                    },
+                    fail: () => {
+                        console.info("滚动失败", rect.top)
+                    }
+                })
+            }).exec()
+            // wx.pageScrollTo({
+            //     selector: "#currentChapter",
+            //     duration: 300,
+            //     success: (data) => {
+            //         console.info("滚动成功", data)
+            //     },
+            //     fail: (data) => {
+            //         console.info("滚动失败",data)
+            //     }
+            // })
         })
     },
-    onCatalogVisibleChange(e){
+    onCatalogVisibleChange(e) {
         this.setData({
             catalog_visible: e.detail.visible,
         });
     },
-    onCatalogClose(){
+    onCatalogClose() {
         this.setData({
             catalog_visible: false,
         });
+    },
+    onTurnChapter(data) {
+        let self = this
+        let name = data.target.dataset.name
+        let url = data.target.dataset.url
+
+        // 清空所有缓存数据重新开始加载
+        chapterDataCaches = [] // 章节数据缓存
+        currentChapterIndex = 0 // 当前章节索引
+
+        chapterDataCaches.push({
+            url: url,
+            title: name,
+            content: null,
+        })
+
+        wx.showLoading({
+            title: '加载中',
+        })
+
+        // 请求当前阅读章节数据
+        wx.cloud.callFunction({
+            // 云函数名称
+            name: 'reptile',
+            // 传给云函数的参数
+            data: {
+                "type": "get_chapter_content",
+                "arg": chapterDataCaches[currentChapterIndex].url
+            },
+            success: res => {
+                console.info("章节数据", res)
+
+                chapterDataCaches[currentChapterIndex].title = res.result.chapterTitle.trim()
+                chapterDataCaches[currentChapterIndex].content = res.result.chapterContent
+
+                // 缓存区添加下一个
+
+                // 校验下一章链接
+                let nextUrl = res.result.nextChapterUrl
+                if (nextUrl === null) {
+                    nextUrl = this.completeNextUrl(chapterDataCaches[currentChapterIndex].url)
+                }
+
+                chapterDataCaches.push({
+                    content: null,
+                    url: nextUrl,
+                    title: null
+                })
+
+                // 缓存区添加上一个
+
+                // 校验上一章链接
+                let lastUrl = res.result.prevChapterUrl
+                if (lastUrl === null) {
+                    lastUrl = this.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                }
+
+                chapterDataCaches.unshift({
+                    content: null,
+                    url: lastUrl,
+                    title: null
+                })
+
+                // 前面加一, 当前index需要递增
+                currentChapterIndex += 1
+
+
+                console.info("设置内容", chapterDataCaches)
+                self.setData({
+                    read_config: app.globalData.userData.read_config,
+                    chapterContent: chapterDataCaches[currentChapterIndex].content,
+                    chapterTitle: chapterDataCaches[currentChapterIndex].title,
+                    novelTitle: currentNovelTitle
+                }, () => {
+                    self.computePageTotalNum()
+                })
+                this.changeCurrentBgColor(this.data.read_config.background_color)
+
+                wx.hideLoading()
+
+                // 缓存下一章
+                this.cacheNextChapter()
+                // 同步云端进度
+                // 更新云端阅读进度
+                app.globalData.userData.novel_list[currentNovelIndex].progress.name = name
+                app.globalData.userData.novel_list[currentNovelIndex].progress.url = url
+
+                app.updateUserNovelList()
+
+                // 隐藏目录面板
+                this.setData({
+                    catalog_visible: false
+                })
+
+
+            },
+            fail: err => {
+                console.error(err)
+            }
+        })
+    },
+    onCatalogReverseOrderChange(){
+        let read_config_ = this.data.read_config
+        let currentNovelChapterList_ = currentNovelChapterList.reverse()
+        read_config_.catalog_reverse_order = ! read_config_.catalog_reverse_order
+        
+        wx.showLoading({
+          title: '加载中',
+        })
+        this.setData({
+            read_config: read_config_,
+            currentNovelChapterList : currentNovelChapterList_
+        },()=>{
+            wx.hideLoading()
+        })
     },
     computePageTotalNum() {
         // 计算章节内容总页数
@@ -396,26 +553,14 @@ Page({
             }
         }
     },
-    cacheNextChapter() {
-        // 检查是否给出下一章的链接
+    cacheNextChapter(successFun) {
+        /**
+         * 缓存下一章节
+         */
+        let self = this
         let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
         console.info("准备缓存下一章", nextChapterData)
 
-        if (nextChapterData.url === null) {
-            console.info("尝试在currentNovelChapterList中查找下一项")
-            // 尝试在currentNovelChapterList中查找下一项
-            currentNovelChapterList.forEach((item, index) => {
-                if (item.chapterUrl === currentChapterUrl) {
-                    if (index < (currentNovelChapterList.length - 1)) {
-                        chapterDataCaches[currentChapterIndex + 1].url = item.chapterUrl
-                    }
-                }
-            })
-        }
-
-        nextChapterData = chapterDataCaches[currentChapterIndex + 1]
-
-        // 再次筛查是否为null值
         if (nextChapterData.url !== null) {
             // 进行缓冲下一个章节
             console.info("进行缓冲下一个章节")
@@ -428,7 +573,7 @@ Page({
                     "arg": chapterDataCaches[currentChapterIndex + 1].url
                 },
                 success: res => {
-                    console.log("下一章节数据缓存成功", res)
+                    console.info("下一章节数据缓存成功", res)
 
                     chapterDataCaches[currentChapterIndex + 1] = {
                         url: chapterDataCaches[currentChapterIndex + 1].url,
@@ -436,11 +581,27 @@ Page({
                         title: res.result.chapterTitle,
                     }
 
+                    // 缓存区添加下一个
+
+                    // 校验下一章链接
+                    let nextUrl = res.result.nextChapterUrl
+                    if (nextUrl === null) {
+                        nextUrl = self.completNextUrl(chapterDataCaches[currentChapterIndex].url)
+                    }
+
                     chapterDataCaches.push({
-                        url: res.result.nextChapterUrl,
+                        url: nextUrl,
                         content: null,
                         title: null
                     })
+
+                    // 不需要添加上一个
+
+                    // 判断成功回调函数是否存在
+                    if (successFun) {
+                        successFun() // 执行回调
+                    }
+
                 },
                 fail: err => {
                     console.error(err)
@@ -449,15 +610,74 @@ Page({
         }
 
     },
+    cacheLastChapter(successFun, last_page) {
+        /**
+         * 缓存上一章节
+         */
+
+        let self = this
+        let lastChapterData = chapterDataCaches[currentChapterIndex - 1]
+        console.info("准备缓存上一章", lastChapterData)
+
+        if (lastChapterData.url !== null) {
+            // 进行缓冲下一个章节
+            console.info("进行缓冲下一个章节")
+
+            wx.cloud.callFunction({
+                // 云函数名称
+                name: 'reptile',
+                // 传给云函数的参数
+                data: {
+                    "type": "get_chapter_content",
+                    "arg": chapterDataCaches[currentChapterIndex - 1].url
+                },
+                success: res => {
+                    console.info("上一章节数据缓存成功", res)
+
+                    chapterDataCaches[currentChapterIndex - 1] = {
+                        url: chapterDataCaches[currentChapterIndex - 1].url,
+                        content: res.result.chapterContent,
+                        title: res.result.chapterTitle,
+                    }
+
+                    // 缓存区添加上一个
+
+                    // 校验上一章链接
+                    let lastUrl = res.result.prevChapterUrl
+                    if (lastUrl === null) {
+                        lastUrl = self.completeLastUrl(chapterDataCaches[currentChapterIndex].url)
+                    }
+
+                    chapterDataCaches.unshift({
+                        content: null,
+                        url: lastUrl,
+                        title: null
+                    })
+
+                    // 前面加一, 当前index需要递增
+                    currentChapterIndex += 1
+
+                    // 不需要添加下一个
+
+                    if (successFun) {
+                        successFun(last_page)
+                    }
+
+                },
+                fail: err => {
+                    console.error(err)
+                }
+            })
+        }
+    },
     loadNextChapter() {
-        // 判断下一章节的内容是否为空
-        let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
+        let self = this
 
-        if (nextChapterData.content !== null) {
-            console.info("存在下一章缓存, 进行加载")
-
+        function update_page() {
+            // 更新页面
             let chapterContent = chapterDataCaches[currentChapterIndex + 1].content
             let chapterTitle = chapterDataCaches[currentChapterIndex + 1].title
+            let chapterUrl = chapterDataCaches[currentChapterIndex + 1].url
 
             // 更新页面
             currentChapterIndex += 1
@@ -473,20 +693,19 @@ Page({
             */
 
             // 先取消翻页动画再进行加载
-            this.setData({
+            self.setData({
                 hasTransition: false,
             }, () => {
-                console.log(this.data.hasTransition)
-                this.setData({
+                self.setData({
                     pageIndex: 0,
                     chapterContent: chapterContent,
                     chapterTitle: chapterTitle
                 }, () => {
                     // 恢复翻页动画
-                    this.setData({
+                    self.setData({
                         hasTransition: true,
                     }, () => {
-                        this.setData({
+                        self.setData({
                             pageIndex: 1,
                             chapterContent: chapterContent,
                             chapterTitle: chapterTitle
@@ -495,102 +714,45 @@ Page({
                 })
             })
 
+            // 更新云端阅读进度
+            app.globalData.userData.novel_list[currentNovelIndex].progress.name = chapterTitle
+            app.globalData.userData.novel_list[currentNovelIndex].progress.url = chapterUrl
+
+            app.updateUserNovelList()
+
             // 重新计算总页数
-            this.computePageTotalNum()
+            self.computePageTotalNum()
 
             // 尝试缓存下一章
-            this.cacheNextChapter()
+            self.cacheNextChapter()
+        }
 
+        // 判断下一章节的内容是否为空
+        let nextChapterData = chapterDataCaches[currentChapterIndex + 1]
 
+        if (nextChapterData.content !== null) {
+            console.info("存在下一章缓存, 进行加载")
+            update_page()
         } else if (nextChapterData.url !== null) {
             // 进行缓冲下一个章节
             console.info("缓冲下一个章节")
-            wx.cloud.callFunction({
-                // 云函数名称
-                name: 'reptile',
-                // 传给云函数的参数
-                data: {
-                    "type": "get_chapter_content",
-                    "arg": chapterDataCaches[currentChapterIndex + 1].url
-                },
-                success: res => {
-                    console.log("下一章节数据缓存成功", res)
-
-                    chapterDataCaches[currentChapterIndex + 1] = {
-                        url: chapterDataCaches[currentChapterIndex + 1].url,
-                        content: res.result.chapterContent,
-                        title: res.result.chapterTitle,
-                    }
-
-                    chapterDataCaches.push({
-                        url: res.result.nextChapterUrl,
-                        content: null,
-                        title: null
-                    })
-
-                    console.info("缓存完毕, 进行加载")
-
-                    let chapterContent = chapterDataCaches[currentChapterIndex + 1].content
-                    let chapterTitle = chapterDataCaches[currentChapterIndex + 1].title
-
-                    // 更新页面
-                    currentChapterIndex += 1
-
-                    // 先取消翻页动画再进行加载
-                    this.setData({
-                        hasTransition: false,
-                    }, () => {
-                        console.log(this.data.hasTransition)
-                        this.setData({
-                            pageIndex: 0,
-                            chapterContent: chapterContent,
-                            chapterTitle: chapterTitle
-                        }, () => {
-                            // 恢复翻页动画
-                            this.setData({
-                                hasTransition: true,
-                            }, () => {
-                                this.setData({
-                                    pageIndex: 1,
-                                    chapterContent: chapterContent,
-                                    chapterTitle: chapterTitle
-                                })
-                            })
-                        })
-                    })
-
-                    // 重新计算总页数
-                    this.computePageTotalNum()
-
-                    // 尝试缓存下一章
-                    this.cacheNextChapter()
-
-                },
-                fail: err => {
-                    console.error(err)
-                }
-            })
-
-
+            this.cacheNextChapter(update_page)
 
         } else {
             console.info("啥也没有咋可能")
         }
     },
-    loadLastChapter(last_page=true) {
+    loadLastChapter(last_page = true) {
         /**
          * last_page=true 默认翻到最后一页
          */
 
-         console.log(last_page)
+        let self = this
 
-        let nextChapterData = chapterDataCaches[currentChapterIndex - 1]
-
-        if (nextChapterData.content !== null) {
-            console.info("存在上一章缓存, 进行加载")
-
+        function update_page(last_page) {
             let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
             let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
+            let chapterUrl = chapterDataCaches[currentChapterIndex - 1].url
 
             // 更新页面
             currentChapterIndex -= 1
@@ -606,26 +768,26 @@ Page({
             */
 
             // 先取消翻页动画再进行加载
-            this.setData({
+            self.setData({
                 hasTransition: false,
             }, () => {
-                this.setData({
+                self.setData({
                     chapterContent: chapterContent,
                     chapterTitle: chapterTitle
                 }, () => {
 
                     // 计算页面数
-                    this.computePageTotalNum()
+                    self.computePageTotalNum()
 
                     // 恢复翻页动画
-                    this.setData({
-                        pageIndex: pageTotalNum + 1,  // 翻到章节中的最后一页的后一页
+                    self.setData({
+                        pageIndex: pageTotalNum + 1, // 翻到章节中的最后一页的后一页
                     }, () => {
                         let target_num = pageTotalNum
-                        if (! last_page){
+                        if (!last_page) {
                             target_num = 1
                         }
-                        this.setData({
+                        self.setData({
                             hasTransition: true,
                             pageIndex: target_num,
                             chapterContent: chapterContent,
@@ -635,87 +797,53 @@ Page({
                 })
             })
 
+            // 更新云端阅读进度
+            app.globalData.userData.novel_list[currentNovelIndex].progress.name = chapterTitle
+            app.globalData.userData.novel_list[currentNovelIndex].progress.url = chapterUrl
 
+            app.updateUserNovelList()
+        }
+
+        let nextChapterData = chapterDataCaches[currentChapterIndex - 1]
+
+        if (nextChapterData.content !== null) {
+            console.info("存在上一章缓存, 进行加载")
+            update_page(last_page)
         } else if (nextChapterData.url !== null) {
             // 进行缓冲上一个章节
             console.info("缓冲上一个章节")
-            wx.cloud.callFunction({
-                // 云函数名称
-                name: 'reptile',
-                // 传给云函数的参数
-                data: {
-                    "type": "get_chapter_content",
-                    "arg": chapterDataCaches[currentChapterIndex - 1].url
-                },
-                success: res => {
-                    console.log("上一章节数据缓存成功", res)
-
-                    chapterDataCaches[currentChapterIndex - 1] = {
-                        url: chapterDataCaches[currentChapterIndex - 1].url,
-                        content: res.result.chapterContent,
-                        title: res.result.chapterTitle,
-                    }
-
-                    // 缓存区添加下一个
-                    chapterDataCaches.push({
-                        url: res.result.nextChapterUrl,
-                        content: null,
-                        title: null
-                    })
-
-                     // 缓存区添加上一个
-                    chapterDataCaches.unshift({
-                        content: null,
-                        url: res.result.prevChapterUrl,
-                        title: null
-                    })
-
-                    // 前面加一, 当前index需要递增
-                    currentChapterIndex += 1
-
-                    console.info("缓存完毕, 进行加载")
-
-                    let chapterContent = chapterDataCaches[currentChapterIndex - 1].content
-                    let chapterTitle = chapterDataCaches[currentChapterIndex - 1].title
-
-                    // 更新页面
-                    currentChapterIndex -= 1
-
-                    // 先取消翻页动画再进行加载
-                    this.setData({
-                        hasTransition: false,
-                    }, () => {
-                        console.log(this.data.hasTransition)
-                        this.setData({
-                            chapterContent: chapterContent,
-                            chapterTitle: chapterTitle
-                        }, () => {
-                            // 重新计算总页数
-                            this.computePageTotalNum()
-
-                            // 恢复翻页动画
-                            this.setData({
-                                hasTransition: true,
-                            }, () => {
-                                this.setData({
-                                    pageIndex: pageTotalNum,
-                                    chapterContent: chapterContent,
-                                    chapterTitle: chapterTitle
-                                })
-                            })
-                        })
-                    })
-
-                },
-                fail: err => {
-                    console.error(err)
-                }
-            })
-
-
-
+            this.cacheLastChapter(update_page, last_page)
         } else {
             console.info("啥也没有咋可能")
         }
+    },
+    completeNextUrl(url) {
+        /**
+         * 从章节列表中尝试补全 给出章节的 下一章的链接
+         */
+        currentNovelChapterList.forEach((item, index) => {
+            if (item.chapterUrl === url) {
+                if (index + 1 < currentNovelChapterList.length) {
+                    return currentNovelChapterList[index + 1].chapterUrl
+                }
+            }
+        })
+
+        return null
+    },
+
+    completeLastUrl(url) {
+        /**
+         * 从章节列表中尝试补全 给出章节的 上一章的链接
+         */
+        currentNovelChapterList.forEach((item, index) => {
+            if (item.chapterUrl === url) {
+                if (index > 0) {
+                    return currentNovelChapterList[index - 1].chapterUrl
+                }
+            }
+        })
+
+        return null
     }
 })
