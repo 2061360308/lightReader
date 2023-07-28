@@ -77,6 +77,10 @@ Page({
         let novel_url = options.url
         var self = this
 
+        // 重置数据, 避免之前章节缓存乱入
+        chapterDataCaches = [] // 章节数据缓存
+        currentChapterIndex = 0 // 当前章节索引
+
         wx.showLoading({
             title: '加载中',
         })
