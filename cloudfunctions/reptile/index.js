@@ -11,9 +11,6 @@ const search_url = 'http://www.biquge5200.cc/modules/article/search.php?searchke
 const webSiteUrl = 'http://www.biquge5200.cc'
 
 async function request(url) {
-    // 这是一个异步事件, 所以我必须返回一个promise对象, 以便后续调用时可以正常获取到返回值
-    // 返回 Promise 对象
-    // 箭头函数的this指向调用者
     let result = await axios
         .get(url, {
             responseType: 'arraybuffer',

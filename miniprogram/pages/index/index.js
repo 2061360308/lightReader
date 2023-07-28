@@ -80,7 +80,7 @@ Component({
       this.setData({
         novel_list: app.globalData.userData.novel_list
       })
-      app.updataUserNovelList()
+      app.updateUserNovelList()
     },
 
     onAddNewBook(){
