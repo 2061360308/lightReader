@@ -22,6 +22,9 @@
 
 <br />
 
+## 运行展示
+<img src="docs/images/example.jpg" style="object-fit:scale-down; width: 100%;"/>
+
 ## 简单使用
 1. 克隆项目到本地`git clone https://github.com/2061360308/lightReader.git`
 2. 使用微信开发者工具打开项目
